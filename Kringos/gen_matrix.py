@@ -6,5 +6,18 @@
 * Σημείωση: Τα r1,r2,r3 είναι οι γραμμές(rows) που αντιστοιχούν σε κάθε y
 """
 
+# Οι μεταβλητές είναι για σκοπούς δοκιμής. Στον κανονικό κώδικα θα παράγονται απο την initialise().
+dimension_x = 50
+dimension_y = 50
+
 def gen_matrix():
-    pass
+    # Δημιουργία κενού πίνακα ο οποίος θα διαμορφωθεί στην τελική μορφή
+    matrix = []
+    for x in range(dimension_x):
+        matrix.append([])
+        for y in range(dimension_y):
+            matrix[x].append([])
+    
+    return matrix
+
+print(gen_matrix())
