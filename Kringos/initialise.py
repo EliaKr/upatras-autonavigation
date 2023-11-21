@@ -44,8 +44,8 @@ def initialise():
     while True:
         global density
         try:
-            density = int(input("Παρακαλώ εισάγετε την πυκνότητα των εμποδίων σε βαθμό 0-99:"))
-            if density >= 0 and density <= 99: break
+            density = int(input("Παρακαλώ εισάγετε την πυκνότητα των εμποδίων σε βαθμό 0-6:"))
+            if density >= 0 and density <= 6: break
             else: print("Προσπαθήστε Ξανά.")
         except:
             print("Προσπαθήστε Ξανά.")
