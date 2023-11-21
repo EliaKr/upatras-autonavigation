@@ -2,8 +2,8 @@ def initialise():
     while True:
         global dimension_x
         try:
-            dimension_x = int(input("Παρακαλώ εισάγετε την διάσταση της πίστας στον άξονα των x, λαμβάνοντας υπ'όψιν ότι η πίστα περιβάλλεται από τοίχο πάχους 1 pixel. (x>4):"))
-            if dimension_x > 4: break
+            dimension_x = int(input("Παρακαλώ εισάγετε την διάσταση της πίστας στον άξονα των x, λαμβάνοντας υπ'όψιν ότι η πίστα περιβάλλεται από τοίχο πάχους 1 pixel. (x>6):"))
+            if dimension_x > 6: break
             else: print("Προσπαθήστε Ξανά.")
         except:
             print("Προσπαθήστε Ξανά.")
@@ -11,8 +11,8 @@ def initialise():
     while True:
         global dimension_y
         try:
-            dimension_y = int(input("Παρακαλώ εισάγετε την διάσταση της πίστας στον άξονα των y, λαμβάνοντας υπ'όψιν ότι η πίστα περιβάλλεται από τοίχο πάχους 1 pixel. (x*y>24):"))
-            if dimension_x * dimension_y > 24: break
+            dimension_y = int(input("Παρακαλώ εισάγετε την διάσταση της πίστας στον άξονα των y, λαμβάνοντας υπ'όψιν ότι η πίστα περιβάλλεται από τοίχο πάχους 1 pixel. (x*y>=36):"))
+            if dimension_x * dimension_y >= 36: break
             else: print("Προσπαθήστε Ξανά.")
         except:
             print("Προσπαθήστε Ξανά.")

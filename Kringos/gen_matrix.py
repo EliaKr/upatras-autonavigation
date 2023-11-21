@@ -7,11 +7,13 @@
 """
 
 # Οι μεταβλητές είναι για σκοπούς δοκιμής. Στον κανονικό κώδικα θα παράγονται απο την initialise().
-dimension_x = 4
-dimension_y = 6
+dimension_x = 6
+dimension_y = 9
 density = 3
 start_x = 2
 start_y = 3
+end_x = 4
+end_y = 6
 # Ο κώδικας για το κυρίως πρόγραμμα αρχίζει από εδώ
 
 import random
@@ -24,8 +26,6 @@ def gen_matrix():
     for i in range(density):
         elements[i] = 1
 
-    print(elements)
-
     # Δημιουργία πίνακα, όπου 1 σημαίνει πως έχω εμπόδιο
     while True: 
         matrix = []
@@ -37,11 +37,13 @@ def gen_matrix():
         for i in range(0,dimension_x): matrix[i][0]=1; matrix[i][dimension_y - 1]=1
         for i in range(0,dimension_y): matrix[0][i]=1; matrix[dimension_x - 1][i]=1
 
-        # Έλεγχος εαν αρχικά το όχημα βρίσκεται "παγιδευμένο" μέσα σε εμπόδια
+        # Έλεγχος εαν αρχικά το όχημα ή ο στόχος βρίσκεται "παγιδευμένο" μέσα σε εμπόδια
         results = []
         for i in range(-1,1):
             for z in range(-1,1):
                 if matrix[start_x + i][start_y + z] != 1: results.append(0)
+                else: results.append(1)
+                if matrix[end_x - 1][end_y -1] != 1: results.append(0)
                 else: results.append(1)
         if sum(results) == 0:
             break
