@@ -48,4 +48,4 @@ def gen_matrix():
     
     return matrix
 
-print(gen_matrix())
+gen_matrix()
