@@ -103,8 +103,13 @@ def gen_layout():
     return layout
 
 initialise()
+print("Initialised.")
+print("Started Building Matrix.")
 gen_matrix()
+print("Finished Building Matrix.")
 
+print("Started Building Layout.")
 img = gen_layout()
+print("Finished Building Matrix.")
 plt.imshow(img, interpolation='nearest')
 plt.show()
