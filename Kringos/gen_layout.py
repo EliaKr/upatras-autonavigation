@@ -1,6 +1,7 @@
 # Δημιουργία της εικόνας της πίστας σε αρχείο gif με βάση τον πίνακα που παράχθηκε στην συνάρτηση gen_matrix().
 
 # Οι μεταβλητές είναι για σκοπούς δοκιμής. Στον κανονικό κώδικα θα παράγονται απο την initialise().
+import time
 matrix = [[1, 1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 0, 0, 0, 0, 0, 0, 1], [1, 0, 0, 0, 0, 0, 0, 0, 1], [1, 0, 0, 0, 0, 0, 1, 1, 1], [1, 1, 1, 0, 1, 0, 1, 0, 1], [1, 1, 1, 1, 1, 1, 1, 1, 1]]
 start_x = 2
 start_y = 3
@@ -10,7 +11,7 @@ dimension_x = 4
 dimension_y = 6
 # Ο κώδικας για το κυρίως πρόγραμμα αρχίζει από εδώ. Τα χρώματα ορίζονται με τις τιμές RGB = [R, G, B]
 
-from matplotlib import pyplot
+from matplotlib import pyplot as plt
 
 def gen_layout():
     layout = matrix.copy()
@@ -26,5 +27,7 @@ def gen_layout():
     
     return layout
 
-pyplot.imshow(gen_layout())
+img = gen_layout()
+plt.imshow(img, interpolation='nearest')
+plt.show()
 #print(gen_layout())
