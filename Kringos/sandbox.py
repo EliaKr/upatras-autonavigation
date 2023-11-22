@@ -101,4 +101,5 @@ def gen_layout(x):
 matrix = gen_matrix(*initialise())
 img = gen_layout(matrix)
 plt.imshow(img)
+plt.title("Output")
 plt.show()
