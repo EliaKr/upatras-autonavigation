@@ -1,7 +1,6 @@
 import random
 from matplotlib import pyplot as plt
 
-
 def initialise():
     while True:
         try:
@@ -101,5 +100,5 @@ def gen_layout(x):
 
 matrix = gen_matrix(*initialise())
 img = gen_layout(matrix)
-plt.imshow(img, interpolation='nearest')
+plt.imshow(img)
 plt.show()
