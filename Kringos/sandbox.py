@@ -99,7 +99,7 @@ def gen_layout(x):
     return layout
 
 matrix = gen_matrix(*initialise())
-img = gen_layout(matrix)
-plt.imshow(img)
+
+plt.imshow(gen_layout(matrix))
 plt.title("Output")
 plt.show()
