@@ -39,7 +39,7 @@ def initialise():
     
     while True:
         try:
-            density = int(input("Παρακαλώ εισάγετε την πυκνότητα των εμποδίων σε βαθμό 0-6:"))
+            density = int(input("Παρακαλώ εισάγετε την πυκνότητα των εμποδίων σε βαθμό 0-6 (Συνίσταται <4):"))
             if density >= 0 and density <= 6: break
             else: print("Προσπαθήστε Ξανά.")
         except:
