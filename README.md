@@ -3,3 +3,7 @@ A repository containing the files of the 1st semester group project with topic "
 
 ## Summary:
 ...
+
+## Dependencies:
+- random
+- matplotlib
