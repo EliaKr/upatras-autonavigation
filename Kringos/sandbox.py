@@ -1,9 +1,9 @@
 import random
 from matplotlib import pyplot as plt
 
+
 def initialise():
     while True:
-        global dimension_x
         try:
             dimension_x = int(input("Παρακαλώ εισάγετε την διάσταση της πίστας στον άξονα των x, λαμβάνοντας υπ'όψιν ότι η πίστα περιβάλλεται από τοίχο πάχους 1 pixel. (x>6):"))
             if dimension_x > 6: break
@@ -12,7 +12,6 @@ def initialise():
             print("Προσπαθήστε Ξανά.")
     
     while True:
-        global dimension_y
         try:
             dimension_y = int(input("Παρακαλώ εισάγετε την διάσταση της πίστας στον άξονα των y, λαμβάνοντας υπ'όψιν ότι η πίστα περιβάλλεται από τοίχο πάχους 1 pixel. (x*y>=36):"))
             if dimension_x * dimension_y >= 36: break
@@ -21,33 +20,28 @@ def initialise():
             print("Προσπαθήστε Ξανά.")
 
     while True:
-        global start_x
-        global start_y
         try:
-            start_coords = list(input("Παρακαλώ εισάγετε τις συντεταγμένες όπου θα ξεκινήσει το όχημα σε μορφή (x,y), λαμβάνοντας υπ'όψιν ότι η πίστα περιβάλλεται από τοίχο πάχους 1 pixel.:"))
-            start_coords.remove(",")
-            start_x = int(start_coords[0])
-            start_y = int(start_coords[1])
+            start_coords = input("Παρακαλώ εισάγετε τις συντεταγμένες όπου θα ξεκινήσει το όχημα σε μορφή (x,y), λαμβάνοντας υπ'όψιν ότι η πίστα περιβάλλεται από τοίχο πάχους 1 pixel.:")
+            coord_list = start_coords.split(",")
+            start_x = int(coord_list[0])
+            start_y = int(coord_list[1])
             if start_x > 0 and start_x < dimension_x and start_y > 0 and start_y < dimension_y: break
             else: print("Προσπαθήστε Ξανά.")
         except:
             print("Προσπαθήστε Ξανά.")
 
     while True:
-        global end_x
-        global end_y
         try:
-            end_coords = list(input("Παρακαλώ εισάγετε τις συντεταγμένες όπου θέλετε να τερματίσει το όχημα σε μορφή (x,y), λαμβάνοντας υπ'όψιν ότι η πίστα περιβάλλεται από τοίχο πάχους 1 pixel.:"))
-            end_coords.remove(",")
-            end_x = int(end_coords[0])
-            end_y = int(end_coords[1])
-            if end_x > 0 and end_x < dimension_x and end_y > 0 and end_y < dimension_y: break
+            end_coords = input("Παρακαλώ εισάγετε τις συντεταγμένες όπου θέλετε να τερματίσει το όχημα σε μορφή (x,y), λαμβάνοντας υπ'όψιν ότι η πίστα περιβάλλεται από τοίχο πάχους 1 pixel.:")
+            coord_list = end_coords.split(",")
+            end_x = int(coord_list[0])
+            end_y = int(coord_list[1])
+            if end_x > 1 and end_x < (dimension_x - 1) and end_y > 1 and end_y < (dimension_y - 1): break
             else: print("Προσπαθήστε Ξανά.")
         except:
             print("Προσπαθήστε Ξανά.")
     
     while True:
-        global density
         try:
             density = int(input("Παρακαλώ εισάγετε την πυκνότητα των εμποδίων σε βαθμό 0-6:"))
             if density >= 0 and density <= 6: break
@@ -55,8 +49,9 @@ def initialise():
         except:
             print("Προσπαθήστε Ξανά.")
     
-def gen_matrix():
-    global matrix
+    return dimension_x, dimension_y, start_x, start_y, end_x, end_y, density
+    
+def gen_matrix(dimension_x, dimension_y, start_x, start_y, end_x, end_y, density):
     # Δημιουργία λίστας ανάλογα με το density των εμποδίων
     elements = []
     for i in range(10):
@@ -75,41 +70,36 @@ def gen_matrix():
         for i in range(0,dimension_x): matrix[i][0]=1; matrix[i][dimension_y - 1]=1
         for i in range(0,dimension_y): matrix[0][i]=1; matrix[dimension_x - 1][i]=1
 
+        #Τοποθέτηση αρχής, τέλους.
+        matrix[start_x][start_y] = "start"
+        matrix[end_x][end_y] = "end"
+
         # Έλεγχος εαν αρχικά το όχημα ή ο στόχος βρίσκεται "παγιδευμένο" μέσα σε εμπόδια
         results = []
         for i in range(-1,1):
             for z in range(-1,1):
                 if matrix[start_x + i][start_y + z] != 1: results.append(0)
                 else: results.append(1)
-                if matrix[end_x - 1][end_y -1] != 1: results.append(0)
+                if matrix[end_x + i][end_y + z] != 1: results.append(0)
                 else: results.append(1)
         if sum(results) == 0:
             break
     
     return matrix
 
-def gen_layout():
-    layout = matrix.copy()
-
-    #Καθορισμός χρώματος των θέσεων έναρξης/τερματισμού (πράσινο,κόκκινο αντίστοιχα)
-    layout[start_x][start_y] = [0, 255, 0]
-    layout[end_x][end_y] = [255, 0, 0]
+def gen_layout(x):
+    layout = x.copy()
 
     for x in layout:
         for y in x:
             if y == 0: layout[layout.index(x)][layout[layout.index(x)].index(y)] = [255, 255, 255]
             elif y == 1: layout[layout.index(x)][layout[layout.index(x)].index(y)] = [0, 0, 0]
+            elif y == "start": layout[layout.index(x)][layout[layout.index(x)].index(y)] = [0, 255, 0]
+            elif y == "end": layout[layout.index(x)][layout[layout.index(x)].index(y)] = [255, 0, 0]
     
     return layout
 
-initialise()
-print("Initialised.")
-print("Started Building Matrix.")
-gen_matrix()
-print("Finished Building Matrix.")
-
-print("Started Building Layout.")
-img = gen_layout()
-print("Finished Building Matrix.")
+matrix = gen_matrix(*initialise())
+img = gen_layout(matrix)
 plt.imshow(img, interpolation='nearest')
 plt.show()

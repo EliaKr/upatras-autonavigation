@@ -18,7 +18,7 @@ end_y = 6
 
 import random
 
-def gen_matrix():
+def gen_matrix(dimension_x, dimension_y, start_x, start_y, end_x, end_y, density):
     # Δημιουργία λίστας ανάλογα με το density των εμποδίων
     elements = []
     for i in range(10):
@@ -37,17 +37,21 @@ def gen_matrix():
         for i in range(0,dimension_x): matrix[i][0]=1; matrix[i][dimension_y - 1]=1
         for i in range(0,dimension_y): matrix[0][i]=1; matrix[dimension_x - 1][i]=1
 
+        #Τοποθέτηση αρχής, τέλους.
+        matrix[start_x][start_y] = "start"
+        matrix[end_x][end_y] = "end"
+
         # Έλεγχος εαν αρχικά το όχημα ή ο στόχος βρίσκεται "παγιδευμένο" μέσα σε εμπόδια
         results = []
         for i in range(-1,1):
             for z in range(-1,1):
                 if matrix[start_x + i][start_y + z] != 1: results.append(0)
                 else: results.append(1)
-                if matrix[end_x - 1][end_y -1] != 1: results.append(0)
+                if matrix[end_x + i][end_y + z] != 1: results.append(0)
                 else: results.append(1)
         if sum(results) == 0:
             break
     
     return matrix
 
-gen_matrix()
+gen_matrix(dimension_x, dimension_y, start_x, start_y, end_x, end_y, density)
