@@ -8,11 +8,3 @@ def find_path():
         d = {}
         d.update({can_do_moves[i]: distance})
     return d
-
-
-
-
-
-
-
-
