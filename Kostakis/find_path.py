@@ -7,4 +7,5 @@ def find_path():
         distance = (((end_x - x)**2 + (end_y - y)**2)**0.5)
         d = {}
         d.update({distance : can_do_moves[can_do_moves.index(i)] })
+    d = sorted(d)
     return d
