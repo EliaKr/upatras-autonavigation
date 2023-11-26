@@ -11,10 +11,6 @@ def detect_poss():
     try:
         can_do_moves.remove((current_x, current_y))
     except Exception:
-        None
+        pass
 
-    
-    
     return can_do_moves
-
-
