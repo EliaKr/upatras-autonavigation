@@ -18,7 +18,10 @@ def detect_poss():
                 can_do_moves.append((current_x + i, current_y + p))
     try:
         can_do_moves.remove((current_x, current_y))
+    except Exception:
+        None
 
+    
     return can_do_moves
 
 print(detect_poss())
