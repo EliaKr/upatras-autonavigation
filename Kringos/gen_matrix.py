@@ -44,5 +44,3 @@ def gen_matrix(dimension_x, dimension_y, start_x, start_y, end_x, end_y, density
             break
     
     return matrix
-
-gen_matrix(dimension_x, dimension_y, start_x, start_y, end_x, end_y, density)

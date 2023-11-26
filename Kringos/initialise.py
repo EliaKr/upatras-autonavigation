@@ -46,5 +46,3 @@ def initialise():
             print("Προσπαθήστε Ξανά.")
     
     return dimension_x, dimension_y, start_x, start_y, end_x, end_y, density
-    
-initialise()

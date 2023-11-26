@@ -14,5 +14,3 @@ def gen_layout(x):
             elif y == "end": layout[layout.index(x)][layout[layout.index(x)].index(y)] = [255, 0, 0]
     
     return layout
-
-gen_layout(matrix)
