@@ -6,5 +6,5 @@ def find_path():
         y = (can_do_moves[can_do_moves.index(i)][1])
         distance = (((end_x - x)**2 + (end_y - y)**2)**0.5)
         d = {}
-        d.update({can_do_moves[can_do_moves.index(i)]: distance})
+        d.update({distance : can_do_moves[can_do_moves.index(i)] })
     return d
