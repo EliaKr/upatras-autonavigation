@@ -74,7 +74,7 @@ def gen_matrix(dimension_x, dimension_y, start_x, start_y, end_x, end_y, density
         matrix[start_x][start_y] = "start"
         matrix[end_x][end_y] = "end"
 
-        # Έλεγχος εαν αρχικά το όχημα ή ο στόχος βρίσκεται "παγιδευμένο" μέσα σε εμπόδια
+        # Έλεγχος εαν αρχικά το όχημα ή ο στόχος βρίσκεται "παγιδευμένο" μέσα σε εμπόδια σε ακτίνα ενός pixel
         results = []
         for i in range(-1,1):
             for z in range(-1,1):
