@@ -1,8 +1,8 @@
 
 #επιστρέφει λίστα της μορφής [(x,y)]
-def detect_poss():
-    current_x = start_x
-    current_y = start_y
+def detect_poss(x=start_x,y=start_y):
+    current_x = x
+    current_y = y
     can_do_moves=[]
     for i in range (-1,2):
         for p in range(-1,2):
