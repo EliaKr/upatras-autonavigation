@@ -60,6 +60,7 @@ def gen_matrix(dimension_x, dimension_y, start_x, start_y, end_x, end_y, density
 
     # Δημιουργία πίνακα, όπου 1 σημαίνει πως έχω εμπόδιο
     while True: 
+        print("new")
         matrix = []
         for x in range(dimension_x):
             matrix.append([])
@@ -82,6 +83,7 @@ def gen_matrix(dimension_x, dimension_y, start_x, start_y, end_x, end_y, density
                 if matrix[end_x + i][end_y + z] != 1: results.append(0)
                 else: results.append(1)
         if sum(results) == 0:
+            print("break")
             break
     
     return matrix
