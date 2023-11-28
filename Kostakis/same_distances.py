@@ -1,15 +1,8 @@
 def same_distances(dictionary):
-    unique_values = {}
-    duplicates = []
+    result = {}
+    for key, value in dictionary.items():
+        result.setdefault(value, []).append(key)
+    return {k: v for k, v in result.items() if len(v) > 1}
 
-    for value in dictionary.values():
-        if value in unique_keys:
-            duplicates.append(value)
-        else:
-            unique_keys[value] = None
-
-    return duplicates
-
-
-d = {(1,2):4,(2,3):5,(7,6):10,(5,9):4}
+d = {(1,2):6,(2,3):5,(7,6):5,(5,9):6}
 print(same_distances(d))
