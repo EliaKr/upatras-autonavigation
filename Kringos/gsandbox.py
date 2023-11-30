@@ -1,9 +1,9 @@
-# Απομένει η προσθήκη λειτουργίας με λίστα αρχείων
-
-import flet as ft 
+import random
+from matplotlib import pyplot as plt
+import flet as ft
 
 def ginit(page: ft.Page):
-# Βασικές Παράμετροι
+    # Βασικές Παράμετροι
     #page.window_width = 600
     #page.window_height = 750
     page.window_resizable = True
@@ -13,12 +13,14 @@ def ginit(page: ft.Page):
     page.vertical_alignment = ft.MainAxisAlignment.CENTER
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
 
-# Ορισμός Συναρτήσεων
+    # Ορισμός Συναρτήσεων
     def checkparameters(e):
+        global values
         try:
-            if int(dimension_x.value) > 6 and (int(dimension_x.value) * int(dimension_y.value)) >= 36 and int(start_x.value) > 1 and int(start_x.value) < int(dimension_x.value) and int(start_y.value) > 1 and int(start_y.value) < int(dimension_y.value) and int(end_x.value) > 1 and int(end_x.value) < (int(dimension_x.value) - 1) and int(end_y.value) > 1 and int(end_y.value) < (int(dimension_y.value) - 1) and int(density.value) >= 0 and int(density.value) <= 6:
+            if int(dimension_x.value) > 6 and (int(dimension_x.value) * int(dimension_y.value)) >= 36 and int(start_x.value) > 1 and int(start_x.value) < int(dimension_x.value) and int(start_y.value) > 1 and int(start_y.value) < int(dimension_y.value) and int(end_x.value) > 1 and int(end_x.value) < (int(dimension_x.value) - 2) and int(end_y.value) > 1 and int(end_y.value) < (int(dimension_y.value) - 2) and int(density.value) >= 0 and int(density.value) <= 6:
                 print(dimension_x.value, dimension_y.value, start_x.value, start_y.value, end_x.value, end_y.value, int(density.value))
-                return dimension_x.value, dimension_y.value, start_x.value, start_y.value, end_x.value, end_y.value, int(density.value)
+                values = (int(dimension_x.value), int(dimension_y.value), int(start_x.value), int(start_y.value), int(end_x.value), int(end_y.value), int(density.value))
+                page.window_close()
             else:
                 page.banner.open = True
                 page.update()
@@ -50,7 +52,7 @@ def ginit(page: ft.Page):
 
         page.update()
 
-# Χτίσιμο Layout
+    # Χτίσιμο Layout
     page.banner = ft.Banner(
         bgcolor=ft.colors.AMBER_100,
         leading=ft.Icon(ft.icons.WARNING_SHARP, color=ft.colors.AMBER, size=40),
@@ -177,4 +179,75 @@ def ginit(page: ft.Page):
     page.add(content)
     page.update()
 
-ft.app(target=ginit)
+def openGUI(x):
+    ft.app(target=x)
+
+def gen_matrix(dimension_x, dimension_y, start_x, start_y, end_x, end_y, density):
+    # Δημιουργία λίστας ανάλογα με το density των εμποδίων
+    elements = []
+    for i in range(10):
+        elements.append(0)
+    for i in range(density):
+        elements[i] = 1
+    print("Λιστα δημιουργηθηκε")
+    # Δημιουργία πίνακα, όπου 1 σημαίνει πως έχω εμπόδιο
+    while True: 
+        matrix = []
+        for x in range(dimension_x):
+            matrix.append([])
+            for y in range(dimension_y):
+                matrix[x].append(random.choice(elements))
+                print("Νέο στοιχείο δημιουργηθηκε")
+        print("Τυχαία δημιουργηθηκε")
+        # Δημιουργία τοίχων
+        for i in range(0,dimension_x): 
+            matrix[i][0]=1
+            matrix[i][dimension_y - 1]=1
+        for i in range(0,dimension_y): 
+            matrix[0][i]=1
+            matrix[dimension_x - 1][i] = 1
+        print("Τοιχοι δημιουργηθηκε")
+
+        #Τοποθέτηση αρχής, τέλους.
+        matrix[start_x][start_y] = "start"
+        matrix[end_x][end_y] = "end"
+
+        # Έλεγχος εαν αρχικά το όχημα ή ο στόχος βρίσκεται "παγιδευμένο" μέσα σε εμπόδια σε ακτίνα ενός pixel
+        results = []
+        for i in range(-1,2):
+            for z in range(-1,2):
+                if matrix[start_x + i][start_y + z] != 1: 
+                    results.append(0)
+                else: 
+                    results.append(1)
+                if matrix[end_x + i][end_y + z] != 1: 
+                    results.append(0)
+                else: 
+                    results.append(1)
+        if sum(results) == 0:
+            break
+    
+    return matrix
+
+def gen_layout(x):
+    layout = x.copy()
+
+    for x in layout:
+        for y in x:
+            if y == 0: 
+                layout[layout.index(x)][layout[layout.index(x)].index(y)] = [255, 255, 255]
+            elif y == 1: 
+                layout[layout.index(x)][layout[layout.index(x)].index(y)] = [0, 0, 0]
+            elif y == "start": 
+                layout[layout.index(x)][layout[layout.index(x)].index(y)] = [0, 255, 0]
+            elif y == "end": 
+                layout[layout.index(x)][layout[layout.index(x)].index(y)] = [255, 0, 0]
+    
+    return layout
+
+openGUI(ginit)
+
+matrix = gen_matrix(*values)
+
+plt.imshow(gen_layout(matrix))
+plt.show()
