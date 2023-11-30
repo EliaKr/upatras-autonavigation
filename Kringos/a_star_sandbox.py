@@ -305,8 +305,6 @@ def a_star(matrix, start, end):
             else:
                 # O Kodikas xreiazetai epektasi meta apo afto to simeio.
 
-
-
 openGUI(ginit)
 
 start_pos = (values[2], values[3])
