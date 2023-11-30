@@ -257,9 +257,9 @@ def a_star(matrix, start, end):
 
     # Αρχικοποιούμε τη λίστα open που θα περιέχει όσα στοιχεία έχουμε περάσει αλλά δεν έχουν ελεγχθεί πλήρως
     q = start
-    open_l = [q]
+    open_l = set([q])
     # Αρχικοποιούμε τη λίστα closed που θα περιέχει όσα στοιχεία έχουμε περάσει και έχουν ελεγχθεί πλήρως
-    closed_l = []
+    closed_l = set([])
 
     while open_l != []:
         # Βρίσκουμε το σημείο με το λιγότερο f στη λίστα. Έστω q. Για να το κάνουμε αυτό θα χρειαστούμε μία μεταβλητή που να βρίσκει το g και μία το h.
@@ -281,7 +281,9 @@ def a_star(matrix, start, end):
         q_succesors = []
         for l in range(-1, 2):
             for z in range(-1, 2):
-                q_succesors.append((q[0] + l, q[1] + z))
+                for e in generated_matrix:
+                    if (q[0] + l, q[1] + z) in e:
+                        q_succesors.append((q[0] + l, q[1] + z))
         
         # Αντιστροφή keys,values στο f_positions
         posq_f = {v: k for k, v in f_positions.items()}
@@ -301,14 +303,7 @@ def a_star(matrix, start, end):
             elif i[1] in closed_l and posq_f[i] < i_f:
                 pass
             else:
-                
-        
-                
-
-
-
-
-        
+                # O Kodikas xreiazetai epektasi meta apo afto to simeio.
 
 
 
