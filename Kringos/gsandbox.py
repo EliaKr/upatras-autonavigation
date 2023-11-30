@@ -118,7 +118,7 @@ def ginit(page: ft.Page):
 
     coords_warntxt = ft.Container(
                     content=ft.Text(
-                    "Λάβετε υπ'όψιν ότι το επίπεδο περιβάλλεται από τοίχο πάχους 1 pixel και το όχημα δεν πρέπει να ακουμπά σε αυτόν.",
+                    f"Λάβετε υπ'όψιν ότι το επίπεδο περιβάλλεται από τοίχο πάχους 1 pixel και το όχημα δεν πρέπει να ακουμπά σε αυτόν.",
                     size=14,
                     color=ft.colors.BLACK,
                     bgcolor=ft.colors.WHITE,
