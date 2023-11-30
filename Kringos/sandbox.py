@@ -28,7 +28,7 @@ def initialise():
             coord_list = start_coords.split(",")
             start_x = int(coord_list[0])
             start_y = int(coord_list[1])
-            if start_x > 1 and start_x < dimension_x and start_y > 1 and start_y < dimension_y: 
+            if start_x > 1 and start_x < dimension_x - 1 and start_y > 1 and start_y < dimension_y - 1: 
                 break
             else: 
                 print("Προσπαθήστε Ξανά.")

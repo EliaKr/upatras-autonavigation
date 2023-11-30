@@ -17,7 +17,7 @@ def ginit(page: ft.Page):
     def checkparameters(e):
         global values
         try:
-            if int(dimension_x.value) > 6 and (int(dimension_x.value) * int(dimension_y.value)) >= 36 and int(start_x.value) > 1 and int(start_x.value) < int(dimension_x.value) and int(start_y.value) > 1 and int(start_y.value) < int(dimension_y.value) and int(end_x.value) > 1 and int(end_x.value) < (int(dimension_x.value) - 2) and int(end_y.value) > 1 and int(end_y.value) < (int(dimension_y.value) - 2) and int(density.value) >= 0 and int(density.value) <= 6:
+            if int(dimension_x.value) > 6 and (int(dimension_x.value) * int(dimension_y.value)) >= 36 and int(start_x.value) > 1 and int(start_x.value) < int(dimension_x.value) - 1 and int(start_y.value) > 1 and int(start_y.value) < int(dimension_y.value) - 1 and int(end_x.value) > 1 and int(end_x.value) < (int(dimension_x.value) - 2) and int(end_y.value) > 1 and int(end_y.value) < (int(dimension_y.value) - 2) and int(density.value) >= 0 and int(density.value) <= 6:
                 print(dimension_x.value, dimension_y.value, start_x.value, start_y.value, end_x.value, end_y.value, int(density.value))
                 values = (int(dimension_x.value), int(dimension_y.value), int(start_x.value), int(start_y.value), int(end_x.value), int(end_y.value), int(density.value))
                 page.window_close()
