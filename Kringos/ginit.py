@@ -3,7 +3,7 @@
 import flet as ft 
 
 def ginit(page: ft.Page):
-# Βασικές Παράμετροι
+    # Βασικές Παράμετροι
     #page.window_width = 600
     #page.window_height = 750
     page.window_resizable = True
@@ -13,7 +13,7 @@ def ginit(page: ft.Page):
     page.vertical_alignment = ft.MainAxisAlignment.CENTER
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
 
-# Ορισμός Συναρτήσεων
+    # Ορισμός Συναρτήσεων
     def checkparameters(e):
         try:
             if int(dimension_x.value) > 6 and (int(dimension_x.value) * int(dimension_y.value)) >= 36 and int(start_x.value) > 1 and int(start_x.value) < int(dimension_x.value) and int(start_y.value) > 1 and int(start_y.value) < int(dimension_y.value) and int(end_x.value) > 1 and int(end_x.value) < (int(dimension_x.value) - 1) and int(end_y.value) > 1 and int(end_y.value) < (int(dimension_y.value) - 1) and int(density.value) >= 0 and int(density.value) <= 6:
@@ -50,7 +50,7 @@ def ginit(page: ft.Page):
 
         page.update()
 
-# Χτίσιμο Layout
+    # Χτίσιμο Layout
     page.banner = ft.Banner(
         bgcolor=ft.colors.AMBER_100,
         leading=ft.Icon(ft.icons.WARNING_SHARP, color=ft.colors.AMBER, size=40),
