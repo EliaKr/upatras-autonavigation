@@ -1,3 +1,4 @@
+
 def find_path():
     can_do_moves = detect_poss()
     for i in can_do_moves:
@@ -6,8 +7,13 @@ def find_path():
         distance = (((end_x - x)**2 + (end_y - y)**2)**0.5)
         d = {}
         d.update({can_do_moves[can_do_moves.index(i)] : distance })
-    for z in sorted (d, key = d.get):
-        d1 = {}
-        d1.update(z,d[z])
-     
-    return d1
+    sorted_d = dict(sorted(d.items(), key=lambda x:x[1]))
+
+    return sorted_d
+
+
+
+
+
+
+
