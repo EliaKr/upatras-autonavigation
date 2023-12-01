@@ -7,6 +7,7 @@ def ginit(page: ft.Page):
     #page.window_width = 600
     #page.window_height = 750
     page.window_resizable = True
+    page.window_maximized = True
     
     page.title = "Initialise Parameters"
     page.theme_mode = ft.ThemeMode.LIGHT
