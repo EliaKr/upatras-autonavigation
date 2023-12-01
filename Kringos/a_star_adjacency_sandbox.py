@@ -295,12 +295,14 @@ class Graph:
 
     # heuristic function with equal values for all nodes
     def h(self, n):
-        H = {
-            'A': 1,
-            'B': 1,
-            'C': 1,
-            'D': 1
-        }
+        H = {n: 1}
+        
+        # H = {
+        #     'A': 1,
+        #     'B': 1,
+        #     'C': 1,
+        #     'D': 1
+        # }
 
         return H[n]
 
