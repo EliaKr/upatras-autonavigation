@@ -392,6 +392,8 @@ matrix = gen_matrix(*values)
 adjacency_list = gen_adjacency_list(gen_coord_layout(matrix))
 print(f"Adjacency list: {gen_adjacency_list(gen_coord_layout(matrix))}")
 
+print(f"Start: {start_pos}, End: {end_pos}")
+
 graph1 = Graph(adjacency_list)
 graph1.a_star_algorithm(start_pos, end_pos)
 
