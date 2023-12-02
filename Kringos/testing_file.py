@@ -1,114 +1,9 @@
-# Reference: https://llego.dev/posts/implementing-the-a-search-algorithm-python/ (MIT License)
+# Reference: https://stackoverflow.com/questions/69780594/developing-a-algorithm-in-python
+
 import random
 from matplotlib import pyplot as plt
 import flet as ft
-import numpy as np
-
-class AStar:
-
-    def __init__(self, map_grid):
-        self.open = [] #open list
-        self.closed = [] #closed list
-        self.map_grid = map_grid
-
-    def search(self, start_node, goal_node):
-
-        self.open.append(start_node)
-
-        while self.open:
-
-            #sort open list to get node with lowest cost first
-            self.open.sort()
-            current_node = self.open.pop(0)
-
-            #add current node to closed list
-            self.closed.append(current_node)
-
-            if current_node == goal_node:
-                #reached goal node
-                return self.reconstruct_path(goal_node)
-
-            #check every neighbor
-            neighbors = self.get_neighbors(current_node)
-
-            for neighbor in neighbors:
-                if neighbor in self.closed:
-                    continue
-
-                g_cost = current_node.g_cost + 1 #cost to move
-                h_cost = self.heuristic(neighbor, goal_node)
-                f_cost = g_cost + h_cost
-
-                #check if we found cheaper path
-                if neighbor in self.open:
-                    if neighbor.f_cost > f_cost:
-                        self.update_node(neighbor, g_cost, h_cost)
-                else:
-                    self.update_node(neighbor, g_cost, h_cost)
-
-        #no path found
-        return None
-
-    def get_neighbors(self, node):
-        pass #calculate valid adjacent nodes
-
-    def heuristic(self, node, goal):
-        pass #estimate cost to goal
-
-    def reconstruct_path(self, goal_node):
-        pass #follow parents back to start
-
-    def update_node(self, node, g_cost, h_cost):
-        pass  #update if we find better path
-    
-    def get_neighbors(self, node):
-        dirs = [[1,0], [0,1], [-1,0], [0,-1]]
-        neighbors = []
-
-        for dir in dirs:
-            neighbor_pos = (node.pos[0] + dir[0], node.pos[1] + dir[1])
-
-            #check if new pos in bounds
-            if (0 <= neighbor_pos[0] < self.map_grid.shape[0] and
-                0 <= neighbor_pos[1] < self.map_grid.shape[1]):
-
-                #check if traversable
-                if self.map_grid[neighbor_pos] != 1:
-                    neighbors.append(neighbor_pos)
-
-        return neighbors
-    
-    def heuristic(self, node, goal):
-        d = abs(node.pos[0] - goal.pos[0]) + abs(node.pos[1] - goal.pos[1])
-        return d
-
-    def reconstruct_path(self, goal_node):
-        path = [goal_node]
-        current = goal_node
-
-        while current.parent != start_node:
-            path.append(current.parent)
-            current = current.parent
-
-        return path[::-1]  #reverse path
-        
-    def update_node(self, node, g_cost, h_cost):
-        node.g_cost = g_cost
-        node.h_cost = h_cost
-        node.f_cost = g_cost + h_cost
-        node.parent = current_node
-
-class Node:
-
-    def __init__(self, pos: tuple, g_cost: float, h_cost: float):
-        self.pos = pos # (x, y) tuple
-        self.g_cost = g_cost
-        self.h_cost = h_cost
-        self.f_cost = self.g_cost + self.h_cost
-
-        self.parent = None  #previous node
-    def __lt__(self, other):
-        return self.f_cost < other.f_cost
+from collections import deque
 
 def ginit(page: ft.Page):
     # Βασικές Παράμετροι
@@ -116,7 +11,7 @@ def ginit(page: ft.Page):
     #page.window_height = 750
     page.window_resizable = True
     page.window_maximized = True
-
+    
     page.title = "Initialise Parameters"
     page.theme_mode = ft.ThemeMode.LIGHT
     page.vertical_alignment = ft.MainAxisAlignment.CENTER
@@ -354,28 +249,84 @@ def gen_layout(x):
     
     return layout
 
+def gen_coord_layout(x):
+    # Αρχικά μετασχηματίζουμε τον πίνακα με τις θέσεις που δεν έχουν εμπόδια να αναπαρίστανται με τις συντεταγμένες τους και τις θέσεις που έχουν να παραμένουν 1.
+    generated_matrix = x.copy()
+    for x in generated_matrix:
+        for y in x:
+            if y == 0: 
+                generated_matrix[generated_matrix.index(x)][generated_matrix[generated_matrix.index(x)].index(y)] = (generated_matrix.index(x), generated_matrix[generated_matrix.index(x)].index(y))
+            elif y == "start": 
+                generated_matrix[generated_matrix.index(x)][generated_matrix[generated_matrix.index(x)].index(y)] = (generated_matrix.index(x), generated_matrix[generated_matrix.index(x)].index(y))
+            elif y == "end": 
+                generated_matrix[generated_matrix.index(x)][generated_matrix[generated_matrix.index(x)].index(y)] = (generated_matrix.index(x), generated_matrix[generated_matrix.index(x)].index(y))
+    return(generated_matrix)
+
+def gen_adjacency_list(coord_matrix):
+    adjacency_list = {}
+    check_list = [-1,1]
+    for x in coord_matrix:
+        for y in x:
+            temp_list = []
+            for i in check_list:
+                for l in check_list:
+                    try:
+                        if type(coord_matrix[coord_matrix.index(x) + i][coord_matrix[coord_matrix.index(x)].index(y) + l]) == tuple:
+                            temp_list.append(coord_matrix[coord_matrix.index(x) + i][coord_matrix[coord_matrix.index(x)].index(y) + l])
+                    except Exception as err:
+                        print(err)
+            adjacency_list.update({y: temp_list})
+
+    return adjacency_list
+
+
+def backtrace(parent, start, end):
+    path = [end]
+    while path[-1] != start:
+        path.append(parent[path[-1]])
+    path.reverse()
+    return path
+
+
+def A_star(graph, start, end, h):
+    parent = {}
+    queue = {start:h[start]}
+    visited = {start:h[start]}
+
+    while queue:
+
+        queueSort = sorted(queue, key=queue.get, reverse=False)
+        node = list(queueSort)[0]
+        value = queue.pop(list(queueSort)[0])-h[node]
+
+        if node == end:
+            return [backtrace(parent, start, end),value]
+    
+        for i in graph.get(node, []):
+            if(i in visited):
+                if (visited[i] > value + graph[node][i] + h[i]):
+                    parent[i] = node
+                    queue[i] = graph[node][i] + value + h[i]
+                    visited[i] = graph[node][i] + value + h[i]
+            else:
+                parent[i] = node
+                queue[i] = graph[node][i] + value + h[i]
+                visited[i] = graph[node][i] + value + h[i]
+
 openGUI(ginit)
-matrix = np.array(gen_matrix(*values))
 
 start_pos = (values[2], values[3])
 end_pos = (values[4], values[5])
 
-start = Node(start_pos)
-goal = Node(end_pos)
+matrix = gen_matrix(*values)
 
-astar = AStar(matrix)
-path = astar.search(start, goal)
+adjacency_list = gen_adjacency_list(gen_coord_layout(matrix))
+print(f"Adjacency list: {gen_adjacency_list(gen_coord_layout(matrix))}")
 
-# grid = np.array([
-#     [0,0,0,0,1],
-#     [0,0,0,0,0],
-#     [0,0,1,0,0],
-#     [0,0,1,0,0],
-#     [0,0,0,0,0]
-# ])
+print(f"Start: {start_pos}, End: {end_pos}")
 
-# start = Node((0,0), 0, 999)
-# goal = Node((len(grid)-1, len(grid[0])-1),0 ,999)
+state = {start_pos: 1}
 
-# astar = AStar(grid)
-# path = astar.search(start, goal)
+bp = A_star(adjacency_list,start_pos,end_pos,state)
+print(bp[0])
+print(bp[1])
