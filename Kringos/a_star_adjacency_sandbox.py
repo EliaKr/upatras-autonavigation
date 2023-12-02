@@ -1,4 +1,5 @@
 # Reference: https://stackabuse.com/courses/graphs-in-python-theory-and-implementation/lessons/a-star-search-algorithm/
+# Reference: https://llego.dev/posts/implementing-the-a-search-algorithm-python/
 # Χρήση αυτού του κώδικα με δημιουργία adjacency list αυτόματα από matrix.
 
 import random
