@@ -4,6 +4,100 @@ from matplotlib import pyplot as plt
 import flet as ft
 import numpy as np
 
+class AStar:
+
+    def __init__(self, map_grid):
+        self.open = [] #open list
+        self.closed = [] #closed list
+        self.map_grid = map_grid
+
+    def search(self, start_node, goal_node):
+
+        self.open.append(start_node)
+
+        while self.open:
+
+            #sort open list to get node with lowest cost first
+            self.open.sort()
+            current_node = self.open.pop(0)
+
+            #add current node to closed list
+            self.closed.append(current_node)
+
+            if current_node == goal_node:
+                #reached goal node
+                return self.reconstruct_path(goal_node)
+
+            #check every neighbor
+            neighbors = self.get_neighbors(current_node)
+
+            for neighbor in neighbors:
+                if neighbor in self.closed:
+                    continue
+
+                g_cost = current_node.g_cost + 1 #cost to move
+                h_cost = self.heuristic(neighbor, goal_node)
+                f_cost = g_cost + h_cost
+
+                #check if we found cheaper path
+                if neighbor in self.open:
+                    if neighbor.f_cost > f_cost:
+                        self.update_node(neighbor, g_cost, h_cost)
+                else:
+                    self.update_node(neighbor, g_cost, h_cost)
+
+        #no path found
+        return None
+
+    def get_neighbors(self, node):
+        pass #calculate valid adjacent nodes
+
+    def heuristic(self, node, goal):
+        pass #estimate cost to goal
+
+    def reconstruct_path(self, goal_node):
+        pass #follow parents back to start
+
+    def update_node(self, node, g_cost, h_cost):
+        pass  #update if we find better path
+    
+    def get_neighbors(self, node):
+        dirs = [[1,0], [0,1], [-1,0], [0,-1]]
+        neighbors = []
+
+        for dir in dirs:
+            neighbor_pos = (node.pos[0] + dir[0], node.pos[1] + dir[1])
+
+            #check if new pos in bounds
+            if (0 <= neighbor_pos[0] < self.map_grid.shape[0] and
+                0 <= neighbor_pos[1] < self.map_grid.shape[1]):
+
+                #check if traversable
+                if self.map_grid[neighbor_pos] != 1:
+                    neighbors.append(neighbor_pos)
+
+        return neighbors
+    
+    def heuristic(self, node, goal):
+        d = abs(node.pos[0] - goal.pos[0]) + abs(node.pos[1] - goal.pos[1])
+        return d
+
+    def reconstruct_path(self, goal_node):
+        path = [goal_node]
+        current = goal_node
+
+        while current.parent != start_node:
+            path.append(current.parent)
+            current = current.parent
+
+        return path[::-1]  #reverse path
+        
+    def update_node(self, node, g_cost, h_cost):
+        node.g_cost = g_cost
+        node.h_cost = h_cost
+        node.f_cost = g_cost + h_cost
+        node.parent = current_node
+
 def ginit(page: ft.Page):
     # Βασικές Παράμετροι
     #page.window_width = 600
@@ -251,3 +345,11 @@ def gen_layout(x):
 openGUI(ginit)
 matrix = np.array(gen_matrix(*values))
 
+start_pos = (values[2], values[3])
+end_pos = (values[4], values[5])
+
+start = Node(start_pos)
+goal = Node(end_pos)
+
+astar = AStar(matrix)
+path = astar.search(start, goal)

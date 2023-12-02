@@ -144,7 +144,7 @@ def ginit(page: ft.Page):
                             )
 
     density_txt = ft.Text("Πυκνότητα Εμποδίων:", weight=ft.FontWeight.BOLD, size=18)
-    density = ft.Slider(min=1, max=6, divisions=5, label="Πυκνότητα: {value}", on_change=slider_change)
+    density = ft.Slider(min=0, max=6, divisions=6, label="Πυκνότητα: {value}", on_change=slider_change)
     density_slider = ft.Row(
             [
                 density_txt,
