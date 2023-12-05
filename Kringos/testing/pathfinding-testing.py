@@ -1,6 +1,12 @@
-# Απομένει η προσθήκη λειτουργίας με λίστα αρχείων
+# Reference: https://github.com/brean/python-pathfinding/blob/main/docs/01_basic_usage.md
 
-import flet as ft 
+from pathfinding.core.diagonal_movement import DiagonalMovement
+from pathfinding.core.grid import Grid
+from pathfinding.finder.a_star import AStarFinder
+import flet as ft
+import random
+from matplotlib import pyplot as plt
+import flet as ft
 
 def ginit(page: ft.Page):
     # Βασικές Παράμετροι
@@ -180,4 +186,111 @@ def ginit(page: ft.Page):
     page.add(content)
     page.update()
 
-ft.app(target=ginit)
+def openGUI(x):
+    ft.app(target=x)
+
+def gen_matrix_inverted(dimension_x, dimension_y, start_x, start_y, end_x, end_y, density):
+    # Δημιουργία λίστας ανάλογα με το density των εμποδίων
+    elements = []
+    for i in range(10):
+        elements.append(1)
+    for i in range(density):
+        elements[i] = 0
+    # Δημιουργία πίνακα, όπου 0 σημαίνει πως έχω εμπόδιο
+    q = 1
+    while True:
+        print(f"Πίνακας {q}")
+        q += 1
+        matrix = []
+        for y in range(dimension_y):
+            matrix.append([])
+            for x in range(dimension_x):
+                matrix[y].append(random.choice(elements))
+        # Δημιουργία τοίχων
+        for i in range(0,dimension_y): 
+            matrix[i][0]=0
+            matrix[i][dimension_x - 1]=0
+        for i in range(0,dimension_x): 
+            matrix[0][i]=0
+            matrix[dimension_y - 1][i]=0
+
+        #Τοποθέτηση αρχής, τέλους.
+        matrix[start_y][start_x] = 1.02
+        matrix[end_y][end_x] = 1.01
+
+        break
+        # Έλεγχος εαν αρχικά το όχημα ή ο στόχος βρίσκεται "παγιδευμένο" μέσα σε εμπόδια σε ακτίνα ενός pixel
+        results = []
+        for i in range(-1,2):
+            for z in range(-1,2):
+                if matrix[start_x + i][start_y + z] != 1: 
+                    results.append(0)
+                else: 
+                    results.append(1)
+                if matrix[end_x + i][end_y + z] != 1: 
+                    results.append(0)
+                else: 
+                    results.append(0)
+        if sum(results) == 0:
+            break
+    
+    return matrix
+
+def gen_layout_inverted(x):
+    layout = x.copy()
+
+    for x in layout:
+        for y in x:
+            if y == 1: 
+                layout[layout.index(x)][layout[layout.index(x)].index(y)] = [255, 255, 255]
+            elif y == 0: 
+                layout[layout.index(x)][layout[layout.index(x)].index(y)] = [0, 0, 0]
+            elif y == 1.02: 
+                layout[layout.index(x)][layout[layout.index(x)].index(y)] = [0, 255, 0]
+            elif y == 1.01: 
+                layout[layout.index(x)][layout[layout.index(x)].index(y)] = [255, 0, 0]
+    
+    return layout
+
+def plot(positions, solvingtime = "Unknown", distance_travelled = "Unknown"):
+    x = []
+    y = []
+    for i in positions:
+        x.append(i[0])
+        y.append(i[1])
+    
+    plt.xlabel(f"Solving Time: {solvingtime}ms, Distance Travelled: {distance_travelled}")
+    plt.plot(x, y, "b-", linewidth=8.0)
+    
+def poslist(path, end):
+    positions = []
+    for i in path:
+        positions.append(tuple(i))
+    positions.append(end)
+
+    return positions
+
+# Γραφική Έναρξη και Καταχώρηση Μεταβλητών
+openGUI(ginit)
+matrix = gen_matrix_inverted(*values)
+
+# Αρχικοποίηση μεταβλητών για βιβλιοθήκη Pathfinding
+grid = Grid(matrix=matrix)
+start = grid.node(values[2], values[3])
+end = grid.node(values[4], values[5])
+
+# Δημιουργία αντικειμένου finder για χρήση με βιβλιοθήκη Pathfinding και προσδιορισμός χρήσης βιβλιοθήκης A*
+finder = AStarFinder(diagonal_movement=DiagonalMovement.never)
+
+# Εύρεση διαδρομής με χρήση αλγορίθμου Α*
+path, runs = finder.find_path(start, end, grid)
+
+# Δημιουργία λίστας με τις θέσεις που πέρασε το όχημα με χρήση της συνάρτησης poslist()
+end_pos = (values[4], values[5])
+positions = poslist(path, end_pos)
+
+# Προβολή διαδρομής
+plt.imshow(gen_layout_inverted(matrix))
+print(positions)
+plot(positions)
+plt.show()

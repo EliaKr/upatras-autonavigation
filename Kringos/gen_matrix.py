@@ -1,9 +1,9 @@
 """ 
 Η συγκεκριμένη συνάρτηση δημιουργεί ένα πίνακα διαστάσης x*y με βάση τις τιμές που ορίστηκαν από τον χρήστη με την εκτέλεση του προγράμματος και τη συνάρτηση initialise().
-Ο πίνακας είναι της μορφής matrix = [[r1,r2,r3], [r1,r2,r3], [r1,r2,r3]] και οι τιμές του σε κάθε σημείο του 
-μπορούν να προσπελαστούν με βάση τις συντεταγμένες του με χρήση της έκφρασης matrix[x][y]
+Ο πίνακας είναι της μορφής matrix = [[c1,c2,c3], [c1,c2,c3], [c1,c2,c3]] και οι τιμές του σε κάθε σημείο του 
+μπορούν να προσπελαστούν με βάση τις συντεταγμένες του με χρήση της έκφρασης matrix[y][x]
 
-* Σημείωση: Τα r1,r2,r3 είναι οι γραμμές(rows) που αντιστοιχούν σε κάθε y
+* Σημείωση: Τα c1,c2,c3 είναι οι στήλες(columns) που αντιστοιχούν σε κάθε x
 """
 # Ο κώδικας για το κυρίως πρόγραμμα αρχίζει από εδώ
 
@@ -20,21 +20,21 @@ def gen_matrix(dimension_x, dimension_y, start_x, start_y, end_x, end_y, density
     # Δημιουργία πίνακα, όπου 1 σημαίνει πως έχω εμπόδιο
     while True: 
         matrix = []
-        for x in range(dimension_x):
+        for y in range(dimension_y):
             matrix.append([])
-            for y in range(dimension_y):
-                matrix[x].append(random.choice(elements))
+            for x in range(dimension_x):
+                matrix[y].append(random.choice(elements))
         # Δημιουργία τοίχων
-        for i in range(0,dimension_x): 
-            matrix[i][0]=1
-            matrix[i][dimension_y - 1]=1
         for i in range(0,dimension_y): 
+            matrix[i][0]=1
+            matrix[i][dimension_x - 1]=1
+        for i in range(0,dimension_x): 
             matrix[0][i]=1
-            matrix[dimension_x - 1][i]=1
+            matrix[dimension_y - 1][i]=1
 
         #Τοποθέτηση αρχής, τέλους.
-        matrix[start_x][start_y] = "start"
-        matrix[end_x][end_y] = "end"
+        matrix[start_y][start_x] = "start"
+        matrix[end_y][end_x] = "end"
 
         # Έλεγχος εαν αρχικά το όχημα ή ο στόχος βρίσκεται "παγιδευμένο" μέσα σε εμπόδια σε ακτίνα ενός pixel
         results = []
