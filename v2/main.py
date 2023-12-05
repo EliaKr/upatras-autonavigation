@@ -8,8 +8,6 @@ import flet as ft
 
 def ginit(page: ft.Page):
     # Βασικές Παράμετροι
-    #page.window_width = 600
-    #page.window_height = 750
     page.window_resizable = True
     page.window_maximized = True
     
