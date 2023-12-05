@@ -4,7 +4,7 @@ from pathfinding.finder.a_star import AStarFinder
 import flet as ft
 import random
 from matplotlib import pyplot as plt
-import flet as ft
+import time
 
 def ginit(page: ft.Page):
     # Βασικές Παράμετροι
@@ -248,14 +248,14 @@ def gen_layout_inverted(x):
     
     return layout
 
-def plot(positions, solvingtime = "Unknown", distance_travelled = "Unknown"):
+def plot(positions, solvingtime_ms = "Unknown", distance_travelled = "Unknown"):
     x = []
     y = []
     for i in positions:
         x.append(i[0])
         y.append(i[1])
     
-    plt.xlabel(f"Solving Time: {solvingtime}ms, Distance Travelled: {distance_travelled}")
+    plt.xlabel(f"Solving Time: {solvingtime_ms}ms, Distance Travelled: {distance_travelled}")
     plt.plot(x, y, "b-", linewidth=8.0)
     
 def poslist(path, end):
@@ -265,6 +265,18 @@ def poslist(path, end):
     positions.append(end)
 
     return positions
+
+def calcdist(positions):
+    distance = 0
+    for i in positions:
+        x_prev = positions[(positions.index(i) - 1)][0]
+        x_current = i[0]
+        y_prev = positions[(positions.index(i) - 1)][1]
+        y_current = i[1]
+
+        if positions.index(i) > 0:
+            distance += ((x_current - x_prev)** 2 + (y_current - y_prev)** 2)** 0.5
+    return distance
 
 # Γραφική Έναρξη και Καταχώρηση Μεταβλητών
 openGUI(ginit)
@@ -278,15 +290,20 @@ end = grid.node(values[4], values[5])
 # Δημιουργία αντικειμένου finder για χρήση με βιβλιοθήκη Pathfinding και προσδιορισμός χρήσης βιβλιοθήκης A*
 finder = AStarFinder(diagonal_movement=DiagonalMovement.never)
 
-# Εύρεση διαδρομής με χρήση αλγορίθμου Α*
+# Εύρεση διαδρομής με χρήση αλγορίθμου Α* και μέτρηση χρόνου επίλυσης
+start_time =  time.process_time()
 path, runs = finder.find_path(start, end, grid)
+solvingtime_ms = (time.process_time() - start_time) * 1000
 
 # Δημιουργία λίστας με τις θέσεις που πέρασε το όχημα με χρήση της συνάρτησης poslist()
 end_pos = (values[4], values[5])
 positions = poslist(path, end_pos)
 
+#Υπολογισμός απόστασης που διανύθηκε με χρήση της συνάρτησης calcdist()
+distance_travelled = calcdist(positions)
+
 # Προβολή διαδρομής
 plt.imshow(gen_layout_inverted(matrix))
 print(positions)
-plot(positions)
+plot(positions, solvingtime_ms, distance_travelled)
 plt.show()
