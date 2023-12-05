@@ -13,4 +13,4 @@ A repository containing the files of the 1st semester group project with topic "
 - random
 - matplotlib
 - flet
-- collections
+- Information on required libraries is present in each version's `readme.txt` file.
