@@ -4,8 +4,8 @@ start_y = 3
 end_x = 3
 end_y = 5
 
-def bsdr():
-    res = {6: [(1, 2), (5, 9)], 5: [(2, 3), (7, 6)]} #same_distances(find_path())
+def bsdr(current_x,current_y):
+    res = same_distances(find_path(current_x,current_y))
     sorted_res = dict(sorted(res.items()))
     sd_pos=list(sorted_res.values())[0]
     f_p = sd_pos[0]
@@ -22,14 +22,15 @@ def bsdr():
         print('ισες και δευτερες αποστασεις επιστρεφω s_p')
         return s_p #να επιδιορθωθει
 
-def check_blockage( next_point[0],  next_point[1], current_x, current_y):
+def check_blockage( next_point_x,  next_point_y, current_x, current_y):
     available_points = []
-    z = detect_poss(next_point[0], next_point[1]) 
+    z = detect_poss(next_point_x, next_point_y) 
     z.remove((current_x, current_y))
-    if not (next_point[0], next_point[1] + 1) and (next_point[0], next_point[1] - 1) and (next_point[0] + 1, next_point[1]) and (next_point[0] - 1, next_point[1]) in z:
-        return (next_point[0], next_point[1])
+    if not (next_point_x, next_point_y + 1) and (next_point_x, next_point_y - 1) and (next_point_x + 1, next_point_y) and (next_point_x - 1, next_point_y) in z:
+        return (next_point_x, next_point_y)
     else:
         return None
+
 
 def check_diagonal_blockage(done_moves,current_x=start_x,current_y=start_y):
     if matrix[current_x + 1][current_y]==1 and matrix[current_x][current_y + 1]==1:
@@ -77,7 +78,9 @@ def move(current_x=start_x,current_y=start_y):
     ban_moves = []
     while check_position(current_x,current_y,end_x,end_y)== True:
         d_pos_moves= find_path(current_x,current_y)
-        del d_pos_moves[check_diagonal_blockage(current_x,current_y)]
+        try:
+            del d_pos_moves[check_diagonal_blockage(current_x,current_y)]
+        except: None
         if same_distances(d_pos_moves)=={}:
             next_point= list(d_pos_moves.keys())[0]
             if check_blockage( next_point[0],  next_point[1], current_x, current_y) == (next_point[0],  next_point[1]):
@@ -90,7 +93,7 @@ def move(current_x=start_x,current_y=start_y):
         elif same_distances(d_pos_moves)!={}:
             ban_point= bsdr(current_x,current_y) 
             del d_pos_moves[ban_point]
-            next_point= list(d_pos_moves.keys())[0]#κατι λειπει απο την check_diagonal_blockage εχει παιχτει μαλακια
+            next_point= list(d_pos_moves.keys())[0]
             if check_blockage( next_point[0],  next_point[1], current_x, current_y) == (next_point[0],  next_point[1]):
                 del d_pos_moves[(next_point[0],  next_point[1])]
             elif check_blockage( next_point[0],  next_point[1], current_x, current_y) == None:
@@ -107,3 +110,4 @@ def same_distances(dictionary):
     return {k: v for k, v in result.items() if len(v) > 1}
 
 
+print(move(start_x,start_y))
