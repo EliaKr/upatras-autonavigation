@@ -261,11 +261,10 @@ def plot(positions, solvingtime_ms = "Unknown", distance_travelled = "Unknown"):
     
     plt.plot(x, y, "b-", linewidth=8.0)
     
-def poslist(path, end):
+def poslist(path):
     positions = []
     for i in path:
         positions.append(tuple(i))
-    positions.append(end)
 
     return positions
 
@@ -300,7 +299,7 @@ solvingtime_ms = (time.process_time() - start_time) * 1000
 
 # Δημιουργία λίστας με τις θέσεις που πέρασε το όχημα με χρήση της συνάρτησης poslist()
 end_pos = (values[4], values[5])
-positions = poslist(path, end_pos)
+positions = poslist(path)
 
 #Υπολογισμός απόστασης που διανύθηκε με χρήση της συνάρτησης calcdist()
 distance_travelled = calcdist(positions)
