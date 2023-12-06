@@ -1,5 +1,5 @@
 matrix = [[1, 1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 0, 0, 0, 0, 0, 0, 1], [1, 0, 0, 0, 0, 0, 0, 0, 1], [1, 0, 0, 0, 0, 0, 1, 1, 1], [1, 1, 1, 0, 1, 0, 1, 0, 1], [1, 1, 1, 1, 1, 1, 1, 1, 1]]
-start_x = 2
+start_x = 1
 start_y = 3
 end_x = 3
 end_y = 5
@@ -92,7 +92,9 @@ def move(current_x=start_x,current_y=start_y):
                 check_position(current_x,current_y,end_x,end_y)
         elif same_distances(d_pos_moves)!={}:
             ban_point= bsdr(current_x,current_y) 
-            del d_pos_moves[ban_point]
+            try: 
+                del d_pos_moves[ban_point]
+            except: None
             next_point= list(d_pos_moves.keys())[0]
             if check_blockage( next_point[0],  next_point[1], current_x, current_y) == (next_point[0],  next_point[1]):
                 del d_pos_moves[(next_point[0],  next_point[1])]
