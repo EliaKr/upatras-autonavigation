@@ -1,4 +1,9 @@
-matrix = [[1, 1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 0, 0, 0, 0, 0, 0, 1], [1, 0, 0, 0, 0, 0, 0, 0, 1], [1, 0, 0, 0, 0, 0, 1, 1, 1], [1, 1, 1, 0, 1, 0, 1, 0, 1], [1, 1, 1, 1, 1, 1, 1, 1, 1]]
+matrix = [[1, 1, 1, 1, 1, 1, 1, 1, 1], 
+          [1, 1, 0, 0, 1, 0, 0, 0, 1],
+          [1, 0, 0, 0, 1, 0, 0, 0, 1],
+          [1, 0, 0, 0, 1, 0, 1, 1, 1], 
+          [1, 1, 1, 0, 1, 0, 1, 0, 1], 
+          [1, 1, 1, 1, 1, 1, 1, 1, 1]]
 start_x = 1
 start_y = 3
 end_x = 3
@@ -76,11 +81,13 @@ def find_path(current_x=start_x,current_y=start_y):
 def move(current_x=start_x,current_y=start_y):
     done_moves = [(start_x,start_y)]
     ban_moves = []
-    while check_position(current_x,current_y,end_x,end_y)== True:
+    global unsolvable 
+    unsolvable = False
+    while check_position(current_x,current_y,end_x,end_y)== True and unsolvable == False:
         d_pos_moves= find_path(current_x,current_y)
         try:
             del d_pos_moves[check_diagonal_blockage(current_x,current_y)]
-        except: None
+        except Exception : None
         if same_distances(d_pos_moves)=={}:
             next_point= list(d_pos_moves.keys())[0]
             if check_blockage( next_point[0],  next_point[1], current_x, current_y) == (next_point[0],  next_point[1]):
@@ -90,11 +97,19 @@ def move(current_x=start_x,current_y=start_y):
                 current_y =next_point[1]
                 done_moves.append(next_point)
                 check_position(current_x,current_y,end_x,end_y)
+                try:
+                    if done_moves[-1]==done_moves[-3]==done_moves[-5]==done_moves[-7]==done_moves[-9]:
+                        unsolvable = True
+                        done_moves = done_moves[:len(done_moves) - 8]
+                        
+                except Exception:
+                    pass
+
         elif same_distances(d_pos_moves)!={}:
             ban_point= bsdr(current_x,current_y) 
             try: 
                 del d_pos_moves[ban_point]
-            except: None
+            except Exception: pass
             next_point= list(d_pos_moves.keys())[0]
             if check_blockage( next_point[0],  next_point[1], current_x, current_y) == (next_point[0],  next_point[1]):
                 del d_pos_moves[(next_point[0],  next_point[1])]
@@ -111,5 +126,9 @@ def same_distances(dictionary):
         result.setdefault(value, []).append(key)
     return {k: v for k, v in result.items() if len(v) > 1}
 
+def check_unsolvable(x):
+    if x == True:
+        print("unsolvable")
 
 print(move(start_x,start_y))
+print(check_unsolvable(unsolvable))
