@@ -40,11 +40,11 @@ def gen_matrix(dimension_x, dimension_y, start_x, start_y, end_x, end_y, density
         results = []
         for i in range(-1,2):
             for z in range(-1,2):
-                if matrix[start_x + i][start_y + z] != 1: 
+                if matrix[start_y + i][start_x + z] != 1: 
                     results.append(0)
                 else: 
                     results.append(1)
-                if matrix[end_x + i][end_y + z] != 1: 
+                if matrix[end_y + i][end_x + z] != 1: 
                     results.append(0)
                 else: 
                     results.append(1)
