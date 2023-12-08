@@ -215,20 +215,6 @@ def gen_matrix_inverted(dimension_x, dimension_y, start_x, start_y, end_x, end_y
         matrix[end_y][end_x] = 1.01
 
         break
-        # Έλεγχος εαν αρχικά το όχημα ή ο στόχος βρίσκεται "παγιδευμένο" μέσα σε εμπόδια σε ακτίνα ενός pixel
-        results = []
-        for i in range(-1,2):
-            for z in range(-1,2):
-                if matrix[start_y + i][start_x + z] != 1: 
-                    results.append(0)
-                else: 
-                    results.append(1)
-                if matrix[end_y + i][end_x + z] != 1: 
-                    results.append(0)
-                else: 
-                    results.append(0)
-        if sum(results) == 0:
-            break
     
     return matrix
 
