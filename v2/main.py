@@ -289,7 +289,7 @@ grid = Grid(matrix=matrix)
 start = grid.node(values[2], values[3])
 end = grid.node(values[4], values[5])
 
-# Δημιουργία αντικειμένου finder για χρήση με βιβλιοθήκη Pathfinding και προσδιορισμός χρήσης βιβλιοθήκης A*
+# Δημιουργία αντικειμένου finder για χρήση με βιβλιοθήκη Pathfinding και προσδιορισμός χρήσης αλγορίθμου A*
 finder = AStarFinder(diagonal_movement=DiagonalMovement.never)
 
 # Εύρεση διαδρομής με χρήση αλγορίθμου Α* και μέτρηση χρόνου επίλυσης
