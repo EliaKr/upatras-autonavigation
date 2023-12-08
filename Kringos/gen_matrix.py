@@ -35,8 +35,9 @@ def gen_matrix(dimension_x, dimension_y, start_x, start_y, end_x, end_y, density
         #Τοποθέτηση αρχής, τέλους.
         matrix[start_y][start_x] = "start"
         matrix[end_y][end_x] = "end"
-
-        # Έλεγχος εαν αρχικά το όχημα ή ο στόχος βρίσκεται "παγιδευμένο" μέσα σε εμπόδια σε ακτίνα ενός pixel
+        break
+        
+        # Έλεγχος εαν αρχικά το όχημα ή ο στόχος βρίσκεται "παγιδευμένο" μέσα σε εμπόδια σε ακτίνα ενός pixel. # Δεν χρειάζεται αφού γίνεται έλεγχος μην επιλύσιμης διαδρομής.
         results = []
         for i in range(-1,2):
             for z in range(-1,2):
