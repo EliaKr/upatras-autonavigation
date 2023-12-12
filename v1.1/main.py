@@ -2,7 +2,7 @@ import random
 import flet
 from matplotlib import pyplot as plt
 import time
-
+import datetime
 
 def initialise():
     while True:
@@ -286,7 +286,16 @@ def calcdist(positions):
             distance += ((x_current - x_prev)** 2 + (y_current - y_prev)** 2)** 0.5
     return distance
 
+def savefile(matrix):
+    current_datetime = datetime.datetime.now()
+    formatted_datetime = current_datetime.strftime("%Y-%m-%d_%H-%M-%S") 
+    f = open(f"matrix_{formatted_datetime}.txt", 'w', encoding = 'utf-8' )
+    f.write(str(matrix))
+    f.close
+    print (f.name)
+
 matrix = gen_matrix(*initialise())
+savefile(matrix)
 
 start_time =  time.process_time()
 positions = solve(matrix)

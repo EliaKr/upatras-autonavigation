@@ -10,6 +10,7 @@ v2 - readme.txt
 - time
 - pathfinding
 - random
+- datetime
 
 Η εγκατάσταση τους μπορεί να γίνει μέσω του pip ή εναλλακτικά μέσω του package manager του λειτουργικού σας συστήματος αν η διαχείρηση των libraries δεν γίνεται από το pip.
 
