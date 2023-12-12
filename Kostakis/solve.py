@@ -1,20 +1,6 @@
-def solve(matrix):
-    for i in range(len(matrix)):
-        inner_list = matrix[i]
-        if 'start' in inner_list:
-            start_y = i
-            start_x = inner_list.index('start')
-
-    for p in range(len(matrix)):
-        inner_list = matrix[p]
-        if 'end' in inner_list:
-            end_y = p
-            end_x = inner_list.index('end')
-
-
-    matrix[end_y][end_x] = 0
-    matrix[start_y][start_x] = 0
-
+def solve(matrix,start_x,start_y,end_x,end_y):
+    matrix[start_y][start_x]= 0
+    matrix[end_y][end_x]=0
     def bsdr(current_x,current_y):
         res = same_distances(find_path(current_x,current_y))
         sorted_res = dict(sorted(res.items()))
@@ -23,7 +9,7 @@ def solve(matrix):
         s_p = sd_pos[1]
         f_d = find_path(f_p[0],f_p[1])
         s_d = find_path(s_p[0],s_p[1])
-    
+        
         if same_distances(find_path(f_p[0],f_p[1]))==same_distances(find_path(s_p[0],s_p[1]))=={}:
             if list(f_d.values())[0] < list(s_d.values())[0]:
                 return s_p #Κανουμε return s_p διοτι εν συνεχεια θελουμε να διαγραφει απο το dictionary της find_path αφου το f_p αποτελει καταλληλοτερη επιλογη
@@ -107,7 +93,7 @@ def solve(matrix):
                         if done_moves[-1]==done_moves[-3]==done_moves[-5]==done_moves[-7]==done_moves[-9]:
                             unsolvable = True
                             done_moves = done_moves[:len(done_moves) - 8]
-                        
+                            
                     except Exception:
                         pass
 
@@ -131,7 +117,5 @@ def solve(matrix):
         for key, value in dictionary.items():
             result.setdefault(value, []).append(key)
         return {k: v for k, v in result.items() if len(v) > 1}
-    
 
     return move()
-
