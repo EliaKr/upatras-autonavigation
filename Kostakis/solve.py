@@ -1,4 +1,4 @@
-def sollution(matrix):
+def solve(matrix):
     for i in range(len(matrix)):
         inner_list = matrix[i]
         if 'start' in inner_list:
