@@ -6,6 +6,8 @@ import random
 from matplotlib import pyplot as plt
 import time
 import os
+import datetime
+import ast
 
 def ginit(page: ft.Page):
     # Βασικές Παράμετροι
@@ -20,18 +22,40 @@ def ginit(page: ft.Page):
     # Ορισμός Συναρτήσεων
     def checkparameters(e):
         global values
-        try:
-            if int(dimension_x.value) > 6 and (int(dimension_x.value) * int(dimension_y.value)) >= 36 and int(start_x.value) > 1 and int(start_x.value) < int(dimension_x.value) and int(start_y.value) > 1 and int(start_y.value) < int(dimension_y.value) and int(end_x.value) > 1 and int(end_x.value) < (int(dimension_x.value) - 1) and int(end_y.value) > 1 and int(end_y.value) < (int(dimension_y.value) - 1) and int(density.value) >= 0 and int(density.value) <= 3:
-                print(dimension_x.value, dimension_y.value, start_x.value, start_y.value, end_x.value, end_y.value, int(density.value))
-                values = (int(dimension_x.value), int(dimension_y.value), int(start_x.value), int(start_y.value), int(end_x.value), int(end_y.value), int(density.value))
+        global fileselection
+        if dropdown.value == None or dropdown.value == "No Selection":
+            try:
+                if int(dimension_x.value) > 6 and (int(dimension_x.value) * int(dimension_y.value)) >= 36 and int(start_x.value) > 1 and int(start_x.value) < int(dimension_x.value) and int(start_y.value) > 1 and int(start_y.value) < int(dimension_y.value) and int(end_x.value) > 1 and int(end_x.value) < (int(dimension_x.value) - 1) and int(end_y.value) > 1 and int(end_y.value) < (int(dimension_y.value) - 1) and int(density.value) >= 0 and int(density.value) <= 3:
+                    print(dimension_x.value, dimension_y.value, start_x.value, start_y.value, end_x.value, end_y.value, int(density.value))
+                    values = (int(dimension_x.value), int(dimension_y.value), int(start_x.value), int(start_y.value), int(end_x.value), int(end_y.value), int(density.value))
+                    fileselection = ""
+                    print(values)
+                    page.window_close()
+                else:
+                    page.banner.open = True
+                    page.update()
+            except Exception as err:
+                print(err)
+                page.banner.open = True
+                page.update()
+        else:
+            with open(dropdown.value, "r", encoding="utf-8") as f:
+                content = f.read()
+                temp_matrix = ast.literal_eval(content)
+
+                y_dimension = len(temp_matrix)
+                x_dimension = len(temp_matrix[0])
+                print(temp_matrix)
+                
+            print(x_dimension,y_dimension)
+
+            if int(start_x.value) > 1 and int(start_x.value) < x_dimension - 1 and int(start_y.value) > 1 and int(start_y.value) < y_dimension - 1 and int(end_y.value) > 1 and int(end_y.value) < y_dimension - 1 and int(end_x.value) > 1 and int(end_x.value) < x_dimension - 1:
+                values = ("usefile", "usefile", int(start_x.value), int(start_y.value), int(end_x.value), int(end_y.value), "usefile")
+                fileselection = dropdown.value
                 page.window_close()
             else:
                 page.banner.open = True
                 page.update()
-        except Exception as err:
-            print(err)
-            page.banner.open = True
-            page.update()
 
     def close_banner(e):
         page.banner.open = False
@@ -56,16 +80,18 @@ def ginit(page: ft.Page):
 
         page.update()
 
-    def find_files():
-        global filelist
-        filelist = ["Select a file"]
-        files = os.listdir()
-        for i in filelist:
+    def find_files(e):
+        dropdown.options = []
+        filelist = os.listdir()
+        dropdown.options.append(ft.dropdown.Option("No Selection"))
+        for i in sorted(filelist):
+            print(i)
             if "matrix" in i and ".txt" in i:
-                filelist.append({ft.dropdown.Option(i)})
+                dropdown.options.append(ft.dropdown.Option(i))
+        page.update()
 
-    def disablebuttons():
-        if dropdown.value != "Select a file":
+    def disablebuttons(e):
+        if dropdown.value != "No Selection":
             dimension_x.disabled = True
             dimension_y.disabled = True
             density.disabled = True
@@ -76,20 +102,22 @@ def ginit(page: ft.Page):
         page.update()
 
     # Χτίσιμο Layout
-    find_files()
+
     dropdown = ft.Dropdown(
         on_change=disablebuttons,
-        options=filelist,
-        width=200
+        on_focus=find_files,
+        options = [ft.dropdown.Option("Click again for files")],
+        width=350,
+        height=50
     )
 
     dropdown_display = ft.Row(
             [
-                ft.Container(content = dropdown, width = 250, alignment=ft.alignment.center)
+                ft.Container(content = dropdown, width = 350, alignment=ft.alignment.center)
             ],
             alignment=ft.MainAxisAlignment.CENTER,
                             )
-
+                        
     page.banner = ft.Banner(
         bgcolor=ft.colors.AMBER_100,
         leading=ft.Icon(ft.icons.WARNING_SHARP, color=ft.colors.AMBER, size=40),
@@ -301,9 +329,27 @@ def calcdist(positions):
             distance += ((x_current - x_prev)** 2 + (y_current - y_prev)** 2)** 0.5
     return distance
 
+def savefile(matrix):
+    current_datetime = datetime.datetime.now()
+    formatted_datetime = current_datetime.strftime("%Y-%m-%d_%H-%M-%S") 
+    with open(f"matrix_{formatted_datetime}.txt", 'w', encoding = 'utf-8' ) as f:
+        f.write(str(matrix))
+    print (f.name)
+
+def checkstart(dimension_x, dimension_y, start_x, start_y, end_x, end_y, density, filename):
+    if dimension_x != "usefile":
+        matrix = gen_matrix_inverted(*values)
+        savefile(matrix)
+    else:
+        with open(filename, "r", encoding="utf-8") as f:
+            matrix = list(f.read())
+
+    return matrix
+
 # Γραφική Έναρξη και Καταχώρηση Μεταβλητών
 openGUI(ginit)
-matrix = gen_matrix_inverted(*values)
+filename = fileselection
+matrix = checkstart(*values, filename)
 
 # Αρχικοποίηση μεταβλητών για βιβλιοθήκη Pathfinding
 grid = Grid(matrix=matrix)
