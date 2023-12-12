@@ -128,14 +128,14 @@ def solve(matrix):
     for i in range(len(matrix)):
         inner_list = matrix[i]
         if 'start' in inner_list:
-            start_y = i
-            start_x = inner_list.index('start')
+            start_y = inner_list.index('start')
+            start_x = i
 
     for p in range(len(matrix)):
         inner_list = matrix[p]
         if 'end' in inner_list:
-            end_y = p
-            end_x = inner_list.index('end')
+            end_y = inner_list.index('end')
+            end_x = p
 
 
     matrix[end_y][end_x] = 0
@@ -286,15 +286,15 @@ def calcdist(positions):
             distance += ((x_current - x_prev)** 2 + (y_current - y_prev)** 2)** 0.5
     return distance
 
-matrix = gen_matrix(*initialise())
+matrix_used = gen_matrix(*initialise())
 
 start_time =  time.process_time()
-positions = solve(matrix)
+positions = solve(matrix_used)
 solvingtime_ms = (time.process_time() - start_time) * 1000
 
 distance_travelled = calcdist(positions)
 
-plt.imshow(gen_layout(matrix))
+plt.imshow(gen_layout(matrix_used))
 print(positions)
 plot(positions, solvingtime_ms, distance_travelled, unsolvable)
 plt.show()
