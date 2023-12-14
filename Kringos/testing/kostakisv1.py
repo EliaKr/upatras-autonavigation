@@ -248,7 +248,7 @@ def solve(matrix):
                 elif check_blockage( next_point[1],  next_point[0], current_x, current_y) == None:
                     current_x =next_point[1]
                     current_y =next_point[0]
-                    done_moves.append(next_point)
+                    done_moves.append(next_point[::-1])
                     check_position(current_x,current_y,end_x,end_y)
         return done_moves
 
