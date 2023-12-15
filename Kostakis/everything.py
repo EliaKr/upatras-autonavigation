@@ -150,7 +150,19 @@ def calcdist(positions):
             distance += ((x_current - x_prev)** 2 + (y_current - y_prev)** 2)** 0.5
     return distance
 
-def solve(matrix,start_x,start_y,end_x,end_y):
+def solve(matrix):
+    for t in range(len(matrix)):
+        inner_list = matrix[t]
+        if 'start' in inner_list:
+            start_y = t
+            start_x = inner_list.index('start')
+
+    for m in range(len(matrix)):
+        inner_list = matrix[m]
+        if 'end' in inner_list:
+            end_y = m
+            end_x = inner_list.index('end')
+
     matrix[start_y][start_x]= 0
     matrix[end_y][end_x]=0
     def bsdr(current_x,current_y):
@@ -174,22 +186,24 @@ def solve(matrix,start_x,start_y,end_x,end_y):
     def check_blockage( next_point_x,  next_point_y, current_x, current_y):
         available_points = []
         z = detect_poss(next_point_x, next_point_y) 
-        z.remove((current_y,current_x))
-        if not ( next_point_y + 1,next_point_x) and (next_point_y - 1,next_point_x ) and (next_point_y,next_point_x + 1 ) and (next_point_y,next_point_x - 1 ) in z:
-            return (next_point_y,next_point_x )
+        z.remove((current_x,current_y))
+        if not ( next_point_x,next_point_y + 1) and (next_point_x ,next_point_y - 1) and (next_point_x + 1,next_point_y ) and (next_point_x - 1,next_point_y ) in z:
+            return (next_point_x,next_point_y )
         else:
             return None
 
 
     def check_diagonal_blockage(done_moves,current_x=start_x,current_y=start_y):
+        diagonal_blockage_points=[]
         if matrix[current_y][current_x + 1]==1 and matrix[current_y + 1][current_x]==1:
-            return ( current_y + 1,current_x + 1 )
+            diagonal_blockage_points.append(( current_x + 1 ,current_y + 1))
         if matrix[current_y][current_x + 1]==1 and matrix[current_y - 1][current_x]==1:
-            return (current_y - 1,current_x + 1 )
+            diagonal_blockage_points.append((current_x + 1,current_y - 1 ))
         if matrix[current_y][current_x - 1 ]==1 and matrix[current_y + 1][current_x]==1:
-            return (current_y + 1,current_x - 1)
+            diagonal_blockage_points.append((current_x - 1,current_y + 1))
         if matrix[current_y][current_x - 1]==1 and matrix[current_y - 1][current_x]==1:
-            return (current_y - 1 ,current_x - 1 )
+            diagonal_blockage_points.append((current_x - 1,current_y - 1  ))
+        return diagonal_blockage_points
 
     def check_position(current_x,current_y,end_x,end_y):
         if current_x!=end_x or current_y!=end_y:
@@ -202,20 +216,22 @@ def solve(matrix,start_x,start_y,end_x,end_y):
         for i in range (-1,2):
             for p in range(-1,2):
                 if matrix[current_y + p][current_x + i]==0:
-                    can_do_moves.append(( current_y + p,current_x + i))
+                    can_do_moves.append(( current_x + i,current_y + p))
         try:
-            can_do_moves.remove((current_y,current_x ))
+            can_do_moves.remove((current_x,current_y ))
+            for a in range (0,4):
+                can_do_moves.remove(check_diagonal_blockage(current_x,current_y)[a])
         except Exception:
             pass
-
+        
         return can_do_moves
 
     def find_path(current_x=start_x,current_y=start_y):
         can_do_moves = detect_poss(current_x,current_y)
         d = {}
         for i in can_do_moves:
-            y = i[0]
-            x = i[1]
+            x = i[0]
+            y = i[1]
             distance = (((end_x - x)**2 + (end_y - y)**2)**0.5)
             d.update({can_do_moves[can_do_moves.index(i)] : distance })
         sorted_d = dict(sorted(d.items(), key=lambda x:x[1]))
@@ -223,22 +239,19 @@ def solve(matrix,start_x,start_y,end_x,end_y):
         return sorted_d
 
     def move(current_x=start_x,current_y=start_y):
-        done_moves = [(start_y,start_x)]
+        done_moves = [(start_x,start_y)]
         ban_moves = []
         global unsolvable 
         unsolvable = False
         while check_position(current_x,current_y,end_x,end_y)== True and unsolvable == False:
             d_pos_moves= find_path(current_x,current_y)
-            try:
-                del d_pos_moves[check_diagonal_blockage(current_x,current_y)]
-            except Exception : None
             if same_distances(d_pos_moves)=={}:
                 next_point= list(d_pos_moves.keys())[0]
-                if check_blockage( next_point[1],  next_point[0], current_x, current_y) == (next_point[0],  next_point[1]):
+                if check_blockage( next_point[0],  next_point[1], current_x, current_y) == (next_point[0],  next_point[1]):
                     del d_pos_moves[(next_point[0],  next_point[1])]
-                elif check_blockage( next_point[1],  next_point[0], current_x, current_y) == None:
-                    current_x =next_point[1]
-                    current_y =next_point[0]
+                elif check_blockage( next_point[0],  next_point[1], current_x, current_y) == None:
+                    current_x =next_point[0]
+                    current_y =next_point[1]
                     done_moves.append(next_point)
                     check_position(current_x,current_y,end_x,end_y)
                     try:
@@ -255,11 +268,11 @@ def solve(matrix,start_x,start_y,end_x,end_y):
                     del d_pos_moves[ban_point]
                 except Exception: pass
                 next_point= list(d_pos_moves.keys())[0]
-                if check_blockage( next_point[1],  next_point[0], current_x, current_y) == (next_point[0], next_point[1]):
+                if check_blockage( next_point[0],  next_point[1], current_x, current_y) == (next_point[0], next_point[1]):
                     del d_pos_moves[(next_point[0],  next_point[1])]
-                elif check_blockage( next_point[1],  next_point[0], current_x, current_y) == None:
-                    current_x =next_point[1]
-                    current_y =next_point[0]
+                elif check_blockage( next_point[0],  next_point[1], current_x, current_y) == None:
+                    current_x =next_point[0]
+                    current_y =next_point[1]
                     done_moves.append(next_point)
                     check_position(current_x,current_y,end_x,end_y)
         return done_moves
@@ -273,13 +286,16 @@ def solve(matrix,start_x,start_y,end_x,end_y):
     return move()
 
 matrix = gen_matrix(*initialise())
+<<<<<<< HEAD
 display_layout = gen_layout(matrix)
 start_x = initialise()[2]
 start_y = initialise()[3]
 end_x = initialise()[4]
 end_y = initialise()[5]
+=======
+>>>>>>> 63bb061cd6545165c25c9da942074c49e54d6bf9
 start_time =  time.process_time()
-positions = solve(matrix,start_x,start_y,end_x,end_y)
+positions = solve(matrix)
 solvingtime_ms = (time.process_time() - start_time) * 1000
 
 distance_travelled = calcdist(positions)
