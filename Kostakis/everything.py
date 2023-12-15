@@ -286,14 +286,7 @@ def solve(matrix):
     return move()
 
 matrix = gen_matrix(*initialise())
-<<<<<<< HEAD
 display_layout = gen_layout(matrix)
-start_x = initialise()[2]
-start_y = initialise()[3]
-end_x = initialise()[4]
-end_y = initialise()[5]
-=======
->>>>>>> 63bb061cd6545165c25c9da942074c49e54d6bf9
 start_time =  time.process_time()
 positions = solve(matrix)
 solvingtime_ms = (time.process_time() - start_time) * 1000
