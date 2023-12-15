@@ -273,6 +273,7 @@ def solve(matrix,start_x,start_y,end_x,end_y):
     return move()
 
 matrix = gen_matrix(*initialise())
+display_layout = gen_layout(matrix)
 start_x = initialise()[2]
 start_y = initialise()[3]
 end_x = initialise()[4]
@@ -283,7 +284,7 @@ solvingtime_ms = (time.process_time() - start_time) * 1000
 
 distance_travelled = calcdist(positions)
 
-plt.imshow(gen_layout(matrix))
+plt.imshow(display_layout)
 print(positions)
 plot(positions, solvingtime_ms, distance_travelled, unsolvable)
 plt.show()
