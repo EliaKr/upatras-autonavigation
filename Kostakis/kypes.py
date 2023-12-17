@@ -2,6 +2,7 @@ import random
 import flet
 from matplotlib import pyplot as plt
 import time
+import copy
 
 
 def initialise():
@@ -286,13 +287,14 @@ def solve(matrix):
     return move()
 
 matrix = gen_matrix(*initialise())
+generated_matrix = copy.deepcopy(matrix)
 start_time =  time.process_time()
 positions = solve(matrix)
 solvingtime_ms = (time.process_time() - start_time) * 1000
 
 distance_travelled = calcdist(positions)
 
-plt.imshow(gen_layout(matrix))
+plt.imshow(gen_layout(generated_matrix))
 print(positions)
 plot(positions, solvingtime_ms, distance_travelled, unsolvable)
 plt.show()
