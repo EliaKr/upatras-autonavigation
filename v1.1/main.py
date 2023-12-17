@@ -3,66 +3,186 @@ import flet
 from matplotlib import pyplot as plt
 import time
 import copy
+import flet as ft
 
-
-def initialise():
-    while True:
-        try:
-            dimension_x = int(input("Παρακαλώ εισάγετε την διάσταση της πίστας στον άξονα των x, λαμβάνοντας υπ'όψιν ότι η πίστα περιβάλλεται από τοίχο πάχους 1 pixel. (x>6):"))
-            if dimension_x > 6: 
-                break
-            else: 
-                print("Προσπαθήστε Ξανά.") 
-        except Exception:
-            print("Προσπαθήστε Ξανά.")
+def ginit(page: ft.Page):
+    # Βασικές Παράμετροι
+    page.window_resizable = True
+    page.window_maximized = True
     
-    while True:
-        try:
-            dimension_y = int(input("Παρακαλώ εισάγετε την διάσταση της πίστας στον άξονα των y, λαμβάνοντας υπ'όψιν ότι η πίστα περιβάλλεται από τοίχο πάχους 1 pixel. (x*y>=36):"))
-            if dimension_x * dimension_y >= 36: 
-                break
-            else: 
-                print("Προσπαθήστε Ξανά.")
-        except Exception:
-            print("Προσπαθήστε Ξανά.")
+    page.title = "Initialise Parameters"
+    page.theme_mode = ft.ThemeMode.LIGHT
+    page.vertical_alignment = ft.MainAxisAlignment.CENTER
+    page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
 
-    while True:
+    # Ορισμός Συναρτήσεων
+    def checkparameters(e):
+        global values
         try:
-            start_coords = input("Παρακαλώ εισάγετε τις συντεταγμένες όπου θα ξεκινήσει το όχημα σε μορφή (x,y), λαμβάνοντας υπ'όψιν ότι η πίστα περιβάλλεται από τοίχο πάχους 1 pixel.:")
-            coord_list = start_coords.split(",")
-            start_x = int(coord_list[0])
-            start_y = int(coord_list[1])
-            if start_x > 1 and start_x < dimension_x - 1 and start_y > 1 and start_y < dimension_y - 1: 
-                break
-            else: 
-                print("Προσπαθήστε Ξανά.")
-        except Exception:
-            print("Προσπαθήστε Ξανά.")
+            if int(dimension_x.value) > 6 and (int(dimension_x.value) * int(dimension_y.value)) >= 36 and int(start_x.value) > 1 and int(start_x.value) < int(dimension_x.value) and int(start_y.value) > 1 and int(start_y.value) < int(dimension_y.value) and int(end_x.value) > 1 and int(end_x.value) < (int(dimension_x.value) - 1) and int(end_y.value) > 1 and int(end_y.value) < (int(dimension_y.value) - 1) and int(density.value) >= 0 and int(density.value) <= 3:
+                print(dimension_x.value, dimension_y.value, start_x.value, start_y.value, end_x.value, end_y.value, int(density.value))
+                values = (int(dimension_x.value), int(dimension_y.value), int(start_x.value), int(start_y.value), int(end_x.value), int(end_y.value), int(density.value))
+                page.window_close()
+            else:
+                page.banner.open = True
+                page.update()
+        except Exception as err:
+            print(err)
+            page.banner.open = True
+            page.update()
 
-    while True:
-        try:
-            end_coords = input("Παρακαλώ εισάγετε τις συντεταγμένες όπου θέλετε να τερματίσει το όχημα σε μορφή (x,y), λαμβάνοντας υπ'όψιν ότι η πίστα περιβάλλεται από τοίχο πάχους 1 pixel.:")
-            coord_list = end_coords.split(",")
-            end_x = int(coord_list[0])
-            end_y = int(coord_list[1])
-            if end_x > 1 and end_x < (dimension_x - 2) and end_y > 1 and end_y < (dimension_y - 2): 
-                break
-            else: 
-                print("Προσπαθήστε Ξανά.")
-        except Exception:
-            print("Προσπαθήστε Ξανά.")
+    def close_banner(e):
+        page.banner.open = False
+        page.update()
+
+    def slider_change(e):
+        if int(density.value) > 4:
+            density.active_color = ft.colors.RED_900
+            density.inactive_color = ft.colors.RED_400
+
+        elif int(density.value) < 4 and int(density.value) > 2:
+            density.active_color = ft.colors.DEEP_ORANGE
+            density.inactive_color = ft.colors.DEEP_ORANGE_300
+
+        elif int(density.value) < 3 and int(density.value) > 0:
+            density.active_color = ft.colors.LIGHT_BLUE_ACCENT_700
+            density.inactive_color = ft.colors.LIGHT_BLUE_ACCENT_100
+        
+        elif int(density.value) == 0:
+            density.active_color = ft.colors.GREEN_ACCENT_700
+            density.inactive_color = ft.colors.LIGHT_GREEN_ACCENT_200
+
+        page.update()
+
+    # Χτίσιμο Layout
+    page.banner = ft.Banner(
+        bgcolor=ft.colors.AMBER_100,
+        leading=ft.Icon(ft.icons.WARNING_SHARP, color=ft.colors.AMBER, size=40),
+        content=ft.Text(
+            f"Παρακαλώ ελέγξτε τις εισόδους σας!"
+        ),
+        actions=[
+            ft.TextButton("Δοκιμή ξανά", on_click=close_banner)
+        ],
+    )
+
+    logo = ft.Container(
+                    content=ft.Image(src=f"logo.png"),
+                    margin=3,
+                    padding=3,
+                    alignment=ft.alignment.center,
+                    #height=80
+                        )
+
+    dimensions_txt = ft.Container(
+                    content=ft.Text(
+                    "Διαστάσεις Επιπέδου:",
+                    size=22,
+                    color=ft.colors.BLACK,
+                    bgcolor=ft.colors.WHITE,
+                    weight=ft.FontWeight.BOLD
+                                    ),
+                    margin=0,
+                    padding=-1,
+                    alignment=ft.alignment.center,
+                        )
+
+    dimension_x = ft.TextField(label="Διάσταση Χ", width = 200, hint_text="x>6", input_filter=ft.InputFilter(allow=True, regex_string=r"[0-9]", replacement_string=""), border=ft.InputBorder.UNDERLINE)
+    x_txt = ft.Text(
+                    "x",
+                    size=22,
+                    color=ft.colors.BLACK,
+                    bgcolor=ft.colors.WHITE,
+                    weight=ft.FontWeight.BOLD)
+    dimension_y = ft.TextField(label="Διάσταση Y", width = 200, hint_text="x*y>=36", input_filter=ft.InputFilter(allow=True, regex_string=r"[0-9]", replacement_string=""), border=ft.InputBorder.UNDERLINE)
     
-    while True:
-        try:
-            density = int(input("Παρακαλώ εισάγετε την πυκνότητα των εμποδίων σε βαθμό 1-3:"))
-            if density > 0 and density <= 3: 
-                break
-            else: 
-                print("Προσπαθήστε Ξανά.")
-        except Exception:
-            print("Προσπαθήστε Ξανά.")
+    dimensions_input = ft.Row(
+            [
+                dimension_x,
+                x_txt,
+                dimension_y,
+            ],
+            alignment=ft.MainAxisAlignment.CENTER,
+                            )
     
-    return dimension_x, dimension_y, start_x, start_y, end_x, end_y, density
+    coords_txt = ft.Container(
+                    content=ft.Text(
+                    "Συντεταγμένες Εκκίνησης/Τερματισμού:",
+                    size=22,
+                    color=ft.colors.BLACK,
+                    bgcolor=ft.colors.WHITE,
+                    weight=ft.FontWeight.BOLD
+                                    ),
+                    margin=3,
+                    padding=0,
+                    alignment=ft.alignment.center,
+                        )
+
+    coords_warntxt = ft.Container(
+                    content=ft.Text(
+                    "Λάβετε υπ'όψιν ότι το επίπεδο περιβάλλεται από τοίχο πάχους 1 pixel και το όχημα δεν πρέπει να ακουμπά σε αυτόν.",
+                    size=14,
+                    color=ft.colors.BLACK,
+                    bgcolor=ft.colors.WHITE,
+                    weight=ft.FontWeight.NORMAL
+                                    ),
+                    margin=0,
+                    padding=0,
+                    alignment=ft.alignment.center,
+                        )
+
+    start_x = ft.TextField(label="X Εκκίνησης", width=135, input_filter=ft.InputFilter(allow=True, regex_string=r"[0-9]", replacement_string=""), border=ft.InputBorder.UNDERLINE)
+    start_y = ft.TextField(label="Υ Εκκίνησης", width=135, input_filter=ft.InputFilter(allow=True, regex_string=r"[0-9]", replacement_string=""), border=ft.InputBorder.UNDERLINE)
+    end_x = ft.TextField(label="Χ Τερματισμού", width=135, input_filter=ft.InputFilter(allow=True, regex_string=r"[0-9]", replacement_string=""), border=ft.InputBorder.UNDERLINE)
+    end_y = ft.TextField(label="Υ Τερματισμού", width=135, input_filter=ft.InputFilter(allow=True, regex_string=r"[0-9]", replacement_string=""), border=ft.InputBorder.UNDERLINE)
+
+    coords_input = ft.Row(
+            [
+                start_x,
+                start_y,
+                end_x,
+                end_y
+            ],
+            alignment=ft.MainAxisAlignment.CENTER,
+                            )
+
+    density_txt = ft.Text("Πυκνότητα Εμποδίων:", weight=ft.FontWeight.BOLD, size=18)
+    density = ft.Slider(min=0, max=3, divisions=3, label="Πυκνότητα: {value}", on_change=slider_change)
+    density_slider = ft.Row(
+            [
+                density_txt,
+                ft.Container(content = density, width = 250, alignment=ft.alignment.center)
+            ],
+            alignment=ft.MainAxisAlignment.CENTER,
+                            )
+    
+    start_button_style = ft.ButtonStyle({ft.MaterialState.DEFAULT: ft.colors.GREEN, ft.MaterialState.FOCUSED: ft.colors.GREEN_400})
+    start_button = ft.FilledButton("Έναρξη Επίλυσης", icon="play_arrow_sharp", on_click=checkparameters)
+    start_button_display = ft.Row(
+            [
+                ft.Container(content = start_button, width = 250, alignment=ft.alignment.center)
+            ],
+            alignment=ft.MainAxisAlignment.CENTER,
+                                )
+    
+
+    content = ft.Column(
+                        [
+                            logo,
+                            dimensions_txt,
+                            dimensions_input,
+                            coords_txt,
+                            coords_warntxt,
+                            coords_input,
+                            density_slider,
+                            start_button_display
+                        ])
+    
+    page.add(content)
+    page.update()
+
+def openGUI(x):
+    ft.app(target=x)
 
 def gen_matrix(dimension_x, dimension_y, start_x, start_y, end_x, end_y, density):
     # Δημιουργία λίστας ανάλογα με το density των εμποδίων
@@ -285,7 +405,9 @@ def solve(matrix):
 
     return move()
 
-matrix = gen_matrix(*initialise())
+openGUI(ginit)
+matrix = gen_matrix(*values)
+
 generated_matrix = copy.deepcopy(matrix)
 start_time =  time.process_time()
 positions = solve(matrix)
