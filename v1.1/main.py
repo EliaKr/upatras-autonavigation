@@ -271,6 +271,7 @@ def calcdist(positions):
     return distance
 
 def solve(matrix):
+    #Εύρεση σημείου αφετηρίας και τερματισμού
     for t in range(len(matrix)):
         inner_list = matrix[t]
         if 'start' in inner_list:
@@ -289,8 +290,8 @@ def solve(matrix):
         res = same_distances(find_path(current_x,current_y))
         sorted_res = dict(sorted(res.items()))
         sd_pos=list(sorted_res.values())[0]
-        f_p = sd_pos[0]
-        s_p = sd_pos[1]
+        f_p = sd_pos[0] #f_p = first_point
+        s_p = sd_pos[1] #s_p = second_point
         f_d = find_path(f_p[0],f_p[1])
         s_d = find_path(s_p[0],s_p[1])
         
@@ -300,15 +301,15 @@ def solve(matrix):
             elif list(f_d.values())[0] > list(s_d.values())[0]:
                 return f_p
         else: 
-            #print('ισες και δευτερες αποστασεις επιστρεφω s_p')
-            return s_p #να επιδιορθωθει
-
+            
+            return s_p
+    #Συνάρτηση ελέγχου εάν το υπο΄ψηφιο επόμενο σημειο είναι μπλοκαρισμένο ή όχι
     def check_blockage( next_point_x,  next_point_y, current_x, current_y):
         available_points = []
         z = detect_poss(next_point_x, next_point_y) 
         z.remove((current_x,current_y))
         if not ( next_point_x,next_point_y + 1) and (next_point_x ,next_point_y - 1) and (next_point_x + 1,next_point_y ) and (next_point_x - 1,next_point_y ) in z:
-            return (next_point_x,next_point_y )
+            return (next_point_x,next_point_y ) #κάνουμε return το υποψήφιο επόμενο σημείο με σκοπό μετέπειτα να διαγραφεί από το λεξικό υποψήφιων σημείων
         else:
             return None
 
@@ -324,12 +325,12 @@ def solve(matrix):
         if matrix[current_y][current_x - 1]==1 and matrix[current_y - 1][current_x]==1:
             diagonal_blockage_points.append((current_x - 1,current_y - 1  ))
         return diagonal_blockage_points
-
+    #Συγκρίνει την θέση του οχήματος με του τερματισμού
     def check_position(current_x,current_y,end_x,end_y):
         if current_x!=end_x or current_y!=end_y:
             return True
         elif current_x==end_x and current_y==end_y:
-            return False 
+            return False #επιστρέφει False με σκοπό να σπάσει ο βρόγχος στην move()
 
     def detect_poss(current_x=start_x,current_y=start_y):
         can_do_moves=[]
@@ -340,12 +341,12 @@ def solve(matrix):
         try:
             can_do_moves.remove((current_x,current_y ))
             for a in range (0,4):
-                can_do_moves.remove(check_diagonal_blockage(current_x,current_y)[a])
+                can_do_moves.remove(check_diagonal_blockage(current_x,current_y)[a])#επιστρέφεται η λιστα can_do_moves η οποία εμπεριέχει τα υποψήφια σημεία μετάβασης περιφεριακά του οχήματος
         except Exception:
             pass
         
         return can_do_moves
-
+    #Υπολογίζονται όλες οι αποστάσεις μεταξύ υποψήφιων σημείων μετάβασης και τερματίσμου 
     def find_path(current_x=start_x,current_y=start_y):
         can_do_moves = detect_poss(current_x,current_y)
         d = {}
@@ -354,10 +355,10 @@ def solve(matrix):
             y = i[1]
             distance = (((end_x - x)**2 + (end_y - y)**2)**0.5)
             d.update({can_do_moves[can_do_moves.index(i)] : distance })
-        sorted_d = dict(sorted(d.items(), key=lambda x:x[1]))
+        sorted_d = dict(sorted(d.items(), key=lambda x:x[1]))#λεξίκο με κατά αύξουσα σειρά απόστασης της μορφής {(x,y):απόσταση}
 
         return sorted_d
-
+    #Συνάρτηση που προβαίνει στην αλλαγή θέσης του οχήματος και τον υπολογισμό της διαδρομής
     def move(current_x=start_x,current_y=start_y):
         done_moves = [(start_x,start_y)]
         ban_moves = []
@@ -395,8 +396,8 @@ def solve(matrix):
                     current_y =next_point[1]
                     done_moves.append(next_point)
                     check_position(current_x,current_y,end_x,end_y)
-        return done_moves
-
+        return done_moves #λίστα η οποία εμπεριέχει όλες τις κινήσεις που έκανε το όχημα
+    #Συνάρτηση η οποία ελέγχει εάν δυο υποψήφια σημεία μετάβασης ισαπέχουν από το στόχο τα βάζει σε ένα ξεχωριστό λεξικό της μορφής {κοίνη απόσταση:(x1,y1),(x2,y2)} 
     def same_distances(dictionary):
         result = {}
         for key, value in dictionary.items():
