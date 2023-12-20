@@ -303,7 +303,7 @@ def solve(matrix):
         else: 
             
             return s_p
-    #Συνάρτηση ελέγχου εάν το υπο΄ψηφιο επόμενο σημειο είναι μπλοκαρισμένο ή όχι
+    #Συνάρτηση ελέγχου εάν το υποψήφιο επόμενο σημειο είναι μπλοκαρισμένο ή όχι
     def check_blockage( next_point_x,  next_point_y, current_x, current_y):
         available_points = []
         z = detect_poss(next_point_x, next_point_y) 
@@ -355,10 +355,10 @@ def solve(matrix):
             y = i[1]
             distance = (((end_x - x)**2 + (end_y - y)**2)**0.5)
             d.update({can_do_moves[can_do_moves.index(i)] : distance })
-        sorted_d = dict(sorted(d.items(), key=lambda x:x[1]))#λεξίκο με κατά αύξουσα σειρά απόστασης της μορφής {(x,y):απόσταση}
+        sorted_d = dict(sorted(d.items(), key=lambda x:x[1]))#λεξίκο με αύξουσα σειρά απόστασης της μορφής {(x,y):απόσταση}
 
         return sorted_d
-    #Συνάρτηση που προβαίνει στην αλλαγή θέσης του οχήματος και τον υπολογισμό της διαδρομής
+    #Συνάρτηση αλλάζει τη θέση του οχήματος και υπολογίζει τη διαδρομή
     def move(current_x=start_x,current_y=start_y):
         done_moves = [(start_x,start_y)]
         ban_moves = []
@@ -396,8 +396,8 @@ def solve(matrix):
                     current_y =next_point[1]
                     done_moves.append(next_point)
                     check_position(current_x,current_y,end_x,end_y)
-        return done_moves #λίστα η οποία εμπεριέχει όλες τις κινήσεις που έκανε το όχημα
-    #Συνάρτηση η οποία ελέγχει εάν δυο υποψήφια σημεία μετάβασης ισαπέχουν από το στόχο τα βάζει σε ένα ξεχωριστό λεξικό της μορφής {κοίνη απόσταση:(x1,y1),(x2,y2)} 
+        return done_moves #λίστα η οποία περιέχει όλες τις κινήσεις που έκανε το όχημα
+    #Συνάρτηση η οποία ελέγχει εάν δυο υποψήφια σημεία ισαπέχουν από το στόχο και τα βάζει σε ένα ξεχωριστό λεξικό της μορφής {κοίνη απόσταση:(x1,y1),(x2,y2)} 
     def same_distances(dictionary):
         result = {}
         for key, value in dictionary.items():
