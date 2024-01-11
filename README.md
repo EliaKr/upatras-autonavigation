@@ -1,6 +1,7 @@
 # upatras-autonavigation
 
 A repository containing the files of the 1st semester group project with topic "Autonomous Navigation of a Virtual Vehicle Using Python" for the Introduction to Computing (ECE_Y106) class.
+Read our report [here](https://github.com/EliaKr/upatras-autonavigation/blob/main/docs/report.pdf).
 
 ## Summary
 
